@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNFCCC Article 6 Executive Dashboard - JustN0W Durham University</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        durham: {
+                            950: '#EBEBEB',
+                            900: '#1f1424',
+                            800: '#311f38',
+                            700: '#482e53',
+                            purple: '#6f2567',
+                            purplehover: '#8a2f80',
+                            gold: '#c49a45',
+                            light: '#f3e8f4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #140d18; }
+        ::-webkit-scrollbar-thumb { background: #c48edc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6f2567; }
+        .sheet-badge {
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: -0.02em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.25s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-durham-950 text-slate-100 font-sans antialiased selection:bg-durham-purple selection:text-white">
+
+    <!-- =========================================================================
+         GLOBAL EXECUTIVE HEADER (VISIBLE IN BOTH MAIN AND DETAIL VIEWS)
+         ========================================================================= -->
+    <header class="sticky top-0 z-50 bg-durham-900/95 backdrop-blur border-b border-durham-700 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-durham-purple text-white font-extrabold text-sm shadow-md border border-durham-purplehover">DU</span>
+                <div>
+                    <h1 class="text-lg md:text-xl font-extrabold tracking-tight text-white">
+                        UNFCCC Article 6 Executive Dashboard
+                    </h1>
+                    <p class="text-xs text-durham-light/70 mt-0.5">
+                        Official Data Release: <span class="text-durham-gold font-semibold">6 July 2026 (Revised)</span> | Durham University Palatinate Theme
+                    </p>
+                </div>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center space-x-2">
+                <span id="header-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-durham-purple/40 text-durham-light border border-durham-purple">
+                    <i class="fa-solid fa-circle-check mr-1.5 text-durham-gold"></i> 12 Active Sheets Mapped (All Data Linked)
+                </span>
+                <button onclick="backToDashboard()" id="btn-header-back" class="hidden items-center text-xs font-semibold bg-durham-gold hover:bg-amber-500 text-durham-950 px-3.5 py-1.5 rounded-lg transition shadow-md">
+                    <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Dashboard
+                </button>
+            </div>
+        </div>
+
+        <!-- Sheet-by-Sheet Quick Jump Navigation Bar -->
+        <nav id="main-nav-bar" class="bg-durham-950/80 border-t border-durham-700/80 overflow-x-auto py-2 px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center space-x-2 min-w-max text-xs font-medium">
+                <span class="text-durham-light/60 uppercase tracking-wider text-[10px] mr-1">Jump to Section:</span>
+                <a href="#overview_table" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">overview_table</a>
+                <a href="#dnas" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">dnas</a>
+                <a href="#participation_requirements" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">participation_requirements</a>
+                <a href="#pacm_activities" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">pacm_activities</a>
+                <a href="#contr_to_sdg" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">contr_to_sdg</a>
+                <a href="#sdtool_sdg_impact" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">sdtool_sdg_impact</a>
+                <a href="#bilateral_agreements" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">Bilateral agreements</a>
+                <a href="#cooperative_approaches" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">Cooperative approaches</a>
+                <a href="#initial_reports" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">Initial reports</a>
+                <a href="#a6p2_activities" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">a6p2_activities</a>
+                <a href="#eligible_activities" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">eligible_activities</a>
+                <a href="#capacity_building" class="px-2.5 py-1 rounded bg-durham-800 hover:bg-durham-purple text-durham-light transition sheet-badge">capacity_building</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- =========================================================================
+         VIEW 1: MAIN DASHBOARD VIEW (#main-dashboard) - ALL 12 SHEETS SHOWN
+         ========================================================================= -->
+    <main id="main-dashboard" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16 animate-fade-in">
+
+        <!-- ==========================================
+             SHEET 1: OVERVIEW TABLE
+             ========================================== -->
+        <section id="overview_table" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-durham-purple border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-durham-purple/30 text-durham-light border border-durham-purple">Overview Table</span>
+                        <h2 class="text-xl font-bold text-white">Global Article 6 Readiness & Overview</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Summary of Parties participating in Article 6.2 bilateral agreements, initial reports, cooperative approaches, and PACM transitions.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">198 Parties Tracked</span>
+                    <button onclick="openDetailView('overview_table')" class="text-xs font-semibold bg-durham-purple hover:bg-durham-purplehover text-white px-3.5 py-1.5 rounded-lg transition border border-purple-500 shadow-md">
+                        Explore Full Dataset & Analytics (198 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Total Bilateral Agreements</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">226</h3>
+                    <p class="text-xs text-durham-gold mt-1"><i class="fa-solid fa-arrow-up mr-1"></i>Active MoUs & Accords</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Cooperative Approaches</p>
+                    <h3 class="text-3xl font-extrabold text-purple-300 mt-1">81</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Formalized A6.2 Frameworks</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Article 6.2 Activities</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">517</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">In Preparation & Authorizing</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Registered A6.2 Activities</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-1">275</h3>
+                    <p class="text-xs text-emerald-400 mt-1">53.2% Registration Conversion</p>
+                </div>
+            </div>
+
+            <!-- Chart and Table Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+                <div class="lg:col-span-5 bg-durham-800/50 rounded-xl p-4 border border-durham-700 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-sm font-semibold text-durham-light">Top 5 Parties by Article 6.2 Activity Volume</h4>
+                        <p class="text-xs text-durham-light/60 mb-3">Total activities tracked vs. officially registered</p>
+                    </div>
+                    <div class="h-64 relative"><canvas id="chartOverview"></canvas></div>
+                </div>
+                <div class="lg:col-span-7 overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                                <th class="p-3">Party</th>
+                                <th class="p-3 text-right">Bilateral Ag.</th>
+                                <th class="p-3 text-center">Initial Report</th>
+                                <th class="p-3 text-right">Coop. Approaches</th>
+                                <th class="p-3 text-right">A6.2 Activities</th>
+                                <th class="p-3 text-right">Registered</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-durham-700 text-durham-light font-mono">
+                            <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Japan</td><td class="p-3 text-right">32</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300">Submitted</span></td><td class="p-3 text-right">28</td><td class="p-3 text-right">147</td><td class="p-3 text-right font-bold text-emerald-400">95</td></tr>
+                            <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Switzerland</td><td class="p-3 text-right">21</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300">Submitted</span></td><td class="p-3 text-right">4</td><td class="p-3 text-right">38</td><td class="p-3 text-right font-bold text-emerald-400">18</td></tr>
+                            <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Singapore</td><td class="p-3 text-right">28</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-durham-700 text-durham-light">Pending</span></td><td class="p-3 text-right">1</td><td class="p-3 text-right">19</td><td class="p-3 text-right">0</td></tr>
+                            <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Thailand</td><td class="p-3 text-right">2</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300">Submitted</span></td><td class="p-3 text-right">2</td><td class="p-3 text-right">16</td><td class="p-3 text-right font-bold text-emerald-400">12</td></tr>
+                            <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Ghana</td><td class="p-3 text-right">4</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300">Submitted</span></td><td class="p-3 text-right">3</td><td class="p-3 text-right">15</td><td class="p-3 text-right font-bold text-emerald-400">14</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 2: DNAS (DESIGNATED NATIONAL AUTHORITIES)
+             ========================================== -->
+        <section id="dnas" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-durham-gold border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-amber-900/40 text-durham-gold border border-durham-gold">DNAs</span>
+                        <h2 class="text-xl font-bold text-white">Designated National Authorities (DNAs)</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Institutional focal points authorized by Party governments to administer Article 6 operations.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">129 Authorities Listed</span>
+                    <button onclick="openDetailView('dnas')" class="text-xs font-semibold bg-durham-gold hover:bg-amber-500 text-durham-950 px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        Explore Full Dataset & Analytics (129 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Established DNAs</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">129</h3>
+                    <p class="text-xs text-durham-gold mt-1">65.2% of UNFCCC Parties</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Environment Ministries</p>
+                    <h3 class="text-3xl font-extrabold text-durham-gold mt-1">84</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Primary Lead Institutional Authority</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Dedicated Climate Agencies</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">45</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Specialized Carbon / Energy Councils</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Party</th>
+                            <th class="p-3">Authority / Ministry</th>
+                            <th class="p-3">Representative Focal Point</th>
+                            <th class="p-3">Contact Domain</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Albania</td><td class="p-3">Ministry of Environment</td><td class="p-3">Ms. Artenida Duraku</td><td class="p-3 text-durham-light/60 font-mono">mjedisi.gov.al</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Angola</td><td class="p-3">Ministry of Environment</td><td class="p-3">Ivone de Sousa</td><td class="p-3 text-durham-light/60 font-mono">unominamb@gmail.com</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Argentina</td><td class="p-3">Ministerio de Relaciones Exteriores</td><td class="p-3">Ms. Eliana Saissac</td><td class="p-3 text-durham-light/60 font-mono">mrecic.gov.ar</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Armenia</td><td class="p-3">Ministry of Environment</td><td class="p-3">Ms. Ruzanna Grigoryan</td><td class="p-3 text-durham-light/60 font-mono">env.am</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Australia</td><td class="p-3">Department of Climate Change</td><td class="p-3">International Climate Division</td><td class="p-3 text-durham-light/60 font-mono">dcceew.gov.au</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 3: PARTICIPATION REQUIREMENTS
+             ========================================== -->
+        <section id="participation_requirements" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-emerald-500 border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-emerald-950 text-emerald-300 border border-emerald-700">Participation Requirements</span>
+                        <h2 class="text-xl font-bold text-white">Article 6.4 Participation Requirements</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Host country fulfillment filings and formal documentation submissions under Article 6.4 mechanism rules.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">68 Submissions Logged</span>
+                    <button onclick="openDetailView('participation_requirements')" class="text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        Explore Full Dataset & Analytics (68 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Submitting Parties</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">68</h3>
+                    <p class="text-xs text-emerald-400 mt-1">34.3% UNFCCC Party Readiness Rate</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Latest Peak Submission Year</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-1">2025</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">32 Parties Submitted Forms</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Verification Compliance</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">100%</h3>
+                    <p class="text-xs text-emerald-400 mt-1">All Forms Publicly Hosted</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs font-mono">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-sans font-semibold border-b border-durham-700">
+                            <th class="p-3">Host Party</th>
+                            <th class="p-3">Submission Date</th>
+                            <th class="p-3">Form Document Code</th>
+                            <th class="p-3 text-right">UNFCCC Registry Link</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Argentina</td><td class="p-3">2026-06-24</td><td class="p-3 text-durham-light/80">A6.4-FORM-GOV-001_Argentina</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">View File <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i></a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Azerbaijan</td><td class="p-3">2025-12-01</td><td class="p-3 text-durham-light/80">A6.4-FORM-GOV-001_Azerbaijan</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">View File <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i></a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Burundi</td><td class="p-3">2025-09-22</td><td class="p-3 text-durham-light/80">A6.4-FORM-GOV-001_Burundi</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">View File <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i></a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Brazil</td><td class="p-3">2025-11-15</td><td class="p-3 text-durham-light/80">A6.4-FORM-GOV-001_Brazil</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">View File <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i></a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Colombia</td><td class="p-3">2026-02-10</td><td class="p-3 text-durham-light/80">A6.4-FORM-GOV-001_Colombia</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">View File <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[10px]"></i></a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 4: PACM ACTIVITIES
+             ========================================== -->
+        <section id="pacm_activities" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-sky-400 border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-sky-950 text-sky-300 border border-sky-700">PACM Activities</span>
+                        <h2 class="text-xl font-bold text-white">PACM / Article 6.4 Activities Portfolio</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Paris Agreement Crediting Mechanism activities, CDM transitions, and multi-year planned mitigation outcomes (2021–2035).</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">3,731 Projects (First 500 Linked)</span>
+                    <button onclick="openDetailView('pacm_activities')" class="text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        Explore Full Dataset & Analytics (500 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Total PACM Activities</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">3,731</h3>
+                    <p class="text-xs text-sky-400 mt-1">Approved & Transitioning CDM Projects</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Planned Annual Mitigation</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-1">799.8M</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">tCO₂e/year Cumulative Outcomes</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Top Host Country (India)</p>
+                    <h3 class="text-3xl font-extrabold text-sky-400 mt-1">1,258</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">33.7% of Global PACM Pipeline</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">China Activity Portfolio</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">530</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Second Largest Host Destination</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Ref ID</th>
+                            <th class="p-3">Project Name</th>
+                            <th class="p-3">Host Country</th>
+                            <th class="p-3">Sub-type</th>
+                            <th class="p-3 text-right">Planned MO (tCO₂e/yr)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">8</td><td class="p-3 font-medium text-white">NovaGerar Landfill Gas to Energy Project</td><td class="p-3">Brazil</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-700 text-[11px]">LFG-LGW</span></td><td class="p-3 text-right font-mono text-emerald-400">257,910</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">9</td><td class="p-3 font-medium text-white">La Esperanza Hydroelectric Project</td><td class="p-3">Honduras</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-700 text-[11px]">HYD-ROR</span></td><td class="p-3 text-right font-mono text-emerald-400">36,301</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">52</td><td class="p-3 font-medium text-white">Salvador da Bahia Landfill Gas Management</td><td class="p-3">Brazil</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-700 text-[11px]">LFG-LGF</span></td><td class="p-3 text-right font-mono text-emerald-400">613,197</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">104</td><td class="p-3 font-medium text-white">Gujarat Wind Farm Expansion IV</td><td class="p-3">India</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-700 text-[11px]">WIND-ON</span></td><td class="p-3 text-right font-mono text-emerald-400">189,450</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">118</td><td class="p-3 font-medium text-white">Yunnan Small Hydro Power Bundled Project</td><td class="p-3">China</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-700 text-[11px]">HYD-ROR</span></td><td class="p-3 text-right font-mono text-emerald-400">412,080</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 5: CONTRIBUTIONS TO SDG
+             ========================================== -->
+        <section id="contr_to_sdg" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-durham-purple border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-durham-purple/30 text-durham-light border border-durham-purple">Contributions to SDG</span>
+                        <h2 class="text-xl font-bold text-white">Host Party Sustainable Development Contributions</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Excerpts and national strategic alignment statements from Host Party fulfillment forms connecting carbon credits to SDG targets.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">319 Statements Logged</span>
+                    <button onclick="openDetailView('contr_to_sdg')" class="text-xs font-semibold bg-durham-purple hover:bg-durham-purplehover text-white px-3.5 py-1.5 rounded-lg transition border border-purple-500 shadow-md">
+                        Explore Full Dataset & Analytics (319 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">General SD Alignment (sd_gen)</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">55</h3>
+                    <p class="text-xs text-purple-300 mt-1">National Development Strategy Integrations</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Clean Energy Alignment (SDG 7)</p>
+                    <h3 class="text-3xl font-extrabold text-durham-gold mt-1">33</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Most Mentioned Specific SDG Target</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Climate Action (SDG 13)</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">32</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Direct Emission Reduction Mandates</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Country</th>
+                            <th class="p-3">Related SDG</th>
+                            <th class="p-3">Relevant Strategy Text Excerpt</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white w-28">Bangladesh</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-purple/40 text-purple-300 font-mono text-[11px]">sd_gen</span></td><td class="p-3 text-durham-light/80">Bangladesh's engagement in the Article 6.4 mechanism will contribute to sustainable development in line with key national strategies...</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white w-28">Bangladesh</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-indigo-900/60 text-indigo-300 font-mono text-[11px]">sdg01</span></td><td class="p-3 text-durham-light/80">Projects implemented under the mechanism yield significant social co-benefits, job creation, and poverty eradication...</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white w-28">Bangladesh</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-900/60 text-emerald-300 font-mono text-[11px]">sdg07</span></td><td class="p-3 text-durham-light/80">Renewable energy projects reduce dependency on fossil fuels, improve air quality, and expand clean power access...</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white w-28">Ghana</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-900/60 text-durham-gold font-mono text-[11px]">sdg13</span></td><td class="p-3 text-durham-light/80">Article 6 cooperation accelerates national NDC implementation and clean agriculture transition frameworks...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 6: SDTOOL SDG IMPACT
+             ========================================== -->
+        <section id="sdtool_sdg_impact" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-teal-500 border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-teal-950 text-teal-300 border border-teal-700">SDTool SDG Impact</span>
+                        <h2 class="text-xl font-bold text-white">SDTool Activity Impact Assessment</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Granular assessment of specific Article 6 activities against UN Sustainable Development Goal targets and indicators.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">84 Indicator Impacts</span>
+                    <button onclick="openDetailView('sdtool_sdg_impact')" class="text-xs font-semibold bg-teal-600 hover:bg-teal-500 text-white px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        Explore Full Dataset & Analytics (84 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Positive Impact Ratings</p>
+                    <h3 class="text-3xl font-extrabold text-teal-400 mt-1">100%</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">All 84 Logged Activity Impacts Positive</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">SDG 13.2.2 (GHG Emissions)</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">18</h3>
+                    <p class="text-xs text-teal-400 mt-1">Most Verified Primary Indicator</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">SDG 7.2.1 (Renewable Share)</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">15</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Second Most Verified Target</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Activity ID</th>
+                            <th class="p-3">SDG</th>
+                            <th class="p-3">SDG Target</th>
+                            <th class="p-3">SDG Indicator</th>
+                            <th class="p-3 text-center">Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">3370</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-teal-900/60 text-teal-300 font-mono">sdg07</span></td><td class="p-3">7.2 Increase share of renewable energy</td><td class="p-3">7.2.1 Renewable share in final energy</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Positive</span></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">3370</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-indigo-900/60 text-indigo-300 font-mono">sdg08</span></td><td class="p-3">8.5 Full productive employment & decent work</td><td class="p-3">8.5.1 Average hourly earnings by sex/age</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Positive</span></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">3370</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-900/60 text-durham-gold font-mono">sdg13</span></td><td class="p-3">13.a UNFCCC climate mitigation mobilization</td><td class="p-3">13.2.2 Total GHG emissions per year</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Positive</span></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-durham-light/60">3370</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-sky-900/60 text-sky-300 font-mono">sdg03</span></td><td class="p-3">3.9 Reduce deaths from hazardous chemicals</td><td class="p-3">3.9.1 Mortality rate from air pollution</td><td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Positive</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 7: BILATERAL AGREEMENTS (ALL 113 ROWS LINKED)
+             ========================================== -->
+        <section id="bilateral_agreements" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-durham-gold border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-amber-900/40 text-durham-gold border border-durham-gold">Bilateral Agreements</span>
+                        <h2 class="text-xl font-bold text-white">Article 6.2 Bilateral Agreements (MoUs & Accords)</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Government-to-government bilateral treaties and Memorandums of Understanding enabling international ITMO transfers.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">114 Excel Rows (113 Complete Accords)</span>
+                    <button onclick="openDetailView('bilateral_agreements')" class="text-xs font-semibold bg-durham-gold hover:bg-amber-500 text-durham-950 px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        View All 113 Rows & Analytics <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Active Bilateral Agreements</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">113</h3>
+                    <p class="text-xs text-durham-gold mt-1">114 Total Excel Rows (inc. Header)</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Japan (JCM Agreements)</p>
+                    <h3 class="text-3xl font-extrabold text-durham-gold mt-1">32</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Leading Global Buyer by MoUs Signed</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Singapore Bilateral MoUs</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">28</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Second Largest International Carbon Buyer</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs font-mono">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-sans font-semibold border-b border-durham-700">
+                            <th class="p-3">Host Country</th>
+                            <th class="p-3">Buying Country</th>
+                            <th class="p-3">Agreement Type</th>
+                            <th class="p-3">Date Signed</th>
+                            <th class="p-3 text-right">Official Record</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Mongolia</td><td class="p-3 font-sans text-durham-light/80">Japan</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-purple/40 text-purple-300 border border-durham-purple text-[10px]">MoU</span></td><td class="p-3">2013-01-08</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">JCM Portal</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Bangladesh</td><td class="p-3 font-sans text-durham-light/80">Japan</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-purple/40 text-purple-300 border border-durham-purple text-[10px]">MoU</span></td><td class="p-3">2013-03-19</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">JCM Portal</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Ghana</td><td class="p-3 font-sans text-durham-light/80">Switzerland</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px]">Bilateral Treaty</span></td><td class="p-3">2020-11-23</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">UNFCCC Link</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Peru</td><td class="p-3 font-sans text-durham-light/80">Switzerland</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px]">Bilateral Treaty</span></td><td class="p-3">2020-10-20</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">UNFCCC Link</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Indonesia</td><td class="p-3 font-sans text-durham-light/80">Singapore</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-purple/40 text-purple-300 border border-durham-purple text-[10px]">MoU / Framework</span></td><td class="p-3">2023-03-16</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">Gov Portal</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 8: COOPERATIVE APPROACHES
+             ========================================== -->
+        <section id="cooperative_approaches" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-sky-400 border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-amber-900/40 text-durham-gold border border-durham-gold">Cooperative Approaches</span>
+                        <h2 class="text-xl font-bold text-white">Article 6.2 Cooperative Approaches & ITMOs</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Formal cooperative approaches registered with the UNFCCC, detailing expected vs. authorized mitigation outcomes and ITMO transfers.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">48 Excel Rows (47 Complete Approaches)</span>
+                    <button onclick="openDetailView('cooperative_approaches')" class="text-xs font-semibold bg-durham-gold hover:bg-amber-500 text-durham-950 px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        View All 47 Approaches & Analytics <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Total Cooperative Approaches</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">47</h3>
+                    <p class="text-xs text-purple-300 mt-1">48 Total Excel Rows (inc. Header)</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Expected Mitigation Outcomes</p>
+                    <h3 class="text-3xl font-extrabold text-durham-gold mt-1">161.4M</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">tCO₂e Planned Across NDC Periods</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Authorized Outcomes</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-1">108.5M</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">67.2% Authorization Rate</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Transferred ITMOs Logged</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">27.8M</h3>
+                    <p class="text-xs text-emerald-400 mt-1">First Transfer Credits Recorded</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">ID</th>
+                            <th class="p-3">Host</th>
+                            <th class="p-3">Buyer</th>
+                            <th class="p-3">Cooperative Approach Title</th>
+                            <th class="p-3 text-right">Authorized (tCO₂e)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-purple-300">CA0002</td><td class="p-3 font-medium text-white">Ghana</td><td class="p-3">Switzerland</td><td class="p-3 truncate max-w-xs">Climate smart agriculture (sustainable rice cultivation)</td><td class="p-3 text-right font-mono text-emerald-400">5,946,108</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-purple-300">CA0003</td><td class="p-3 font-medium text-white">Thailand</td><td class="p-3">Switzerland</td><td class="p-3 truncate max-w-xs">Operation of e-buses on public bus routes in Bangkok</td><td class="p-3 text-right font-mono text-emerald-400">500,000</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-purple-300">CA0004</td><td class="p-3 font-medium text-white">Vanuatu</td><td class="p-3">Switzerland</td><td class="p-3 truncate max-w-xs">Renewable micro-grid rural electrification project</td><td class="p-3 text-right font-mono text-emerald-400">1,250,000</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-mono text-purple-300">CA0007</td><td class="p-3 font-medium text-white">Peru</td><td class="p-3">Switzerland</td><td class="p-3 truncate max-w-xs">Tuki Wasi green cooking stove distribution framework</td><td class="p-3 text-right font-mono text-emerald-400">3,400,000</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 9: INITIAL REPORTS
+             ========================================== -->
+        <section id="initial_reports" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-durham-gold border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-amber-900/40 text-durham-gold border border-durham-gold">Initial Reports</span>
+                        <h2 class="text-xl font-bold text-white">Article 6.2 Initial Reports Submissions</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Mandatory transparency filings submitted by Parties before or alongside their first authorization of ITMOs.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">25 Reports Published</span>
+                    <button onclick="openDetailView('initial_reports')" class="text-xs font-semibold bg-durham-gold hover:bg-amber-500 text-durham-950 px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        Explore Full Dataset & Analytics (25 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Published Initial Reports</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">25</h3>
+                    <p class="text-xs text-durham-gold mt-1">Fully Verified UNFCCC Filings</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Target NDC Period</p>
+                    <h3 class="text-3xl font-extrabold text-durham-gold mt-1">2021–2030</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Paris Agreement Implementation Window</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Public Link Availability</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">100%</h3>
+                    <p class="text-xs text-emerald-400 mt-1">All Documents Searchable Online</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Party</th>
+                            <th class="p-3">NDC Period</th>
+                            <th class="p-3">Covered Cooperative Approaches</th>
+                            <th class="p-3 text-right">UNFCCC Report Document</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light font-mono">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Switzerland</td><td class="p-3">2021–2030</td><td class="p-3 text-durham-gold">CA0002, CA0003, CA0004</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">InitialReport_Switzerland.pdf</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Ghana</td><td class="p-3">2021–2030</td><td class="p-3 text-durham-gold">CA0002</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">Ghana_s_Article_6_Initial_Report.pdf</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Thailand</td><td class="p-3">2021–2030</td><td class="p-3 text-durham-gold">CA0003</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">Thailand_Initial_Report_A62.pdf</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-sans font-medium text-white">Japan</td><td class="p-3">2021–2030</td><td class="p-3 text-durham-gold">CA0011, CA0014, CA0018</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">Japan_Initial_Report_JCM.pdf</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 10: ARTICLE 6.2 ACTIVITIES
+             ========================================== -->
+        <section id="a6p2_activities" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-durham-purple border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-durham-purple/30 text-durham-light border border-durham-purple">ARTICLE 6.2 ACTIVITIES</span>
+                        <h2 class="text-xl font-bold text-white">Article 6.2 Activities Pipeline & Registration</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Individual projects and programs developed under bilateral cooperative approaches, showing annual mitigation trajectories.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">302 Activity Profiles</span>
+                    <button onclick="openDetailView('a6p2_activities')" class="text-xs font-semibold bg-durham-purple hover:bg-durham-purplehover text-white px-3.5 py-1.5 rounded-lg transition border border-purple-500 shadow-md">
+                        Explore Full Dataset & Analytics (302 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Total A6.2 Activities</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">302</h3>
+                    <p class="text-xs text-purple-300 mt-1">Under Active Development & Pilot</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Registered Status</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-1">275</h3>
+                    <p class="text-xs text-emerald-400 mt-1">91.1% Officially Registered</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Planned Annual Mitigation</p>
+                    <h3 class="text-3xl font-extrabold text-purple-300 mt-1">56.9M</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">tCO₂e/yr Cumulative Planned</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Top Buying Country (Japan)</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">147</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">48.7% of Global A6.2 Activities</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Activity Title</th>
+                            <th class="p-3">Sub-type</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3">Host</th>
+                            <th class="p-3">Buyer</th>
+                            <th class="p-3 text-right">Planned tCO₂e/yr</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Promotion of Climate-Smart Agriculture Rice</td><td class="p-3">Improved Rice</td><td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Registered</span></td><td class="p-3">Ghana</td><td class="p-3">Switzerland</td><td class="p-3 text-right font-mono text-emerald-400">125,073</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Integrated Waste Recycling & Composting</td><td class="p-3">Organic Composting</td><td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Registered</span></td><td class="p-3">Ghana</td><td class="p-3">Switzerland</td><td class="p-3 text-right font-mono text-emerald-400">141,521</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Bangkok Scheduled E-Bus Route Electrification</td><td class="p-3">E-Mobility Bus</td><td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Registered</span></td><td class="p-3">Thailand</td><td class="p-3">Switzerland</td><td class="p-3 text-right font-mono text-emerald-400">100,000</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Chonburi Solar PV Rooftop Generation</td><td class="p-3">Solar PV</td><td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] bg-emerald-900/80 text-emerald-300 font-bold">Registered</span></td><td class="p-3">Thailand</td><td class="p-3">Japan</td><td class="p-3 text-right font-mono text-emerald-400">4,850</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 11: ELIGIBLE ACTIVITIES
+             ========================================== -->
+        <section id="eligible_activities" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-durham-gold border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-amber-900/40 text-durham-gold border border-durham-gold">Eligible Activities</span>
+                        <h2 class="text-xl font-bold text-white">Eligible Activities Taxonomy by Sector</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Approved mitigation technologies, sector definitions, and mechanism eligibility criteria across host countries.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">911 Criteria (First 500 Linked)</span>
+                    <button onclick="openDetailView('eligible_activities')" class="text-xs font-semibold bg-durham-gold hover:bg-amber-500 text-durham-950 px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        Explore Full Dataset & Analytics (500 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Total Eligibility Entries</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">911</h3>
+                    <p class="text-xs text-durham-gold mt-1">Mapped Across Host National Strategies</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">PACM Mechanism Eligibility</p>
+                    <h3 class="text-3xl font-extrabold text-durham-gold mt-1">676</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">74.2% of Total Eligibility Listings</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Article 6.2 Mechanism</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">235</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">25.8% Dedicated Bilateral Listings</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Top Sector (Power & Heat)</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-1">148</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Electricity Generation & Renewables</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Activity Item Description</th>
+                            <th class="p-3">Party</th>
+                            <th class="p-3">Mechanism</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3">Sector Classification</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Renewable energy with storage (stored component)</td><td class="p-3">India</td><td class="p-3 font-mono text-purple-300">A6.2</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300">Eligible</span></td><td class="p-3 text-durham-light/80">Electricity and heat</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Solar thermal power plant generation</td><td class="p-3">India</td><td class="p-3 font-mono text-purple-300">A6.2</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300">Eligible</span></td><td class="p-3 text-durham-light/80">Electricity and heat</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Afforestation and reforestation (A/R)</td><td class="p-3">Ghana</td><td class="p-3 font-mono text-sky-400">PACM</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300">Eligible</span></td><td class="p-3 text-durham-light/80">Land use & forestry</td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Landfill methane gas capture and flaring</td><td class="p-3">Peru</td><td class="p-3 font-mono text-sky-400">PACM</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300">Eligible</span></td><td class="p-3 text-durham-light/80">Waste</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             SHEET 12: CAPACITY BUILDING
+             ========================================== -->
+        <section id="capacity_building" class="scroll-mt-32 rounded-2xl bg-durham-900 border-l-4 border-emerald-500 border border-durham-700 p-6 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-durham-700">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="sheet-badge px-2 py-0.5 text-xs font-bold rounded bg-emerald-950 text-emerald-300 border border-emerald-700">Capacity Building</span>
+                        <h2 class="text-xl font-bold text-white">International Capacity Building Initiatives</h2>
+                    </div>
+                    <p class="text-xs text-durham-light/70 mt-1">Bilateral and multilateral technical assistance programs supporting host Party readiness for Article 6 participation.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-mono text-durham-light/70 bg-durham-800 px-3 py-1.5 rounded-lg border border-durham-700">392 Country Records</span>
+                    <button onclick="openDetailView('capacity_building')" class="text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-lg transition shadow-md">
+                        Explore Full Dataset & Analytics (392 Rows) <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Implementation Beneficiaries</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">350</h3>
+                    <p class="text-xs text-emerald-400 mt-1">Host Country Involvement Entries</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Funding & Donor Parties</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-1">42</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Bilateral & Multilateral Donors</p>
+                </div>
+                <div class="bg-durham-800/80 rounded-xl p-4 border border-durham-700">
+                    <p class="text-xs text-durham-light/60 uppercase font-semibold">Germany (Leading Donor)</p>
+                    <h3 class="text-3xl font-extrabold text-white mt-1">11</h3>
+                    <p class="text-xs text-durham-light/70 mt-1">Major Active Readiness Initiatives</p>
+                </div>
+            </div>
+
+            <!-- Preview Table -->
+            <div class="overflow-x-auto bg-durham-800/30 rounded-xl border border-durham-700 mt-6">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-durham-800 text-durham-light font-semibold border-b border-durham-700">
+                            <th class="p-3">Party / Partner</th>
+                            <th class="p-3">Initiative Name</th>
+                            <th class="p-3">Role</th>
+                            <th class="p-3">Timeline</th>
+                            <th class="p-3 text-right">Project Web Portal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-durham-700 text-durham-light">
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Germany</td><td class="p-3 truncate max-w-xs" title="Supporting Preparedness for Article 6 Cooperation (SPAR6C)">Supporting Preparedness for Article 6 (SPAR6C)</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-purple/40 text-purple-300 text-[10px]">Funding</span></td><td class="p-3 font-mono">2022–2027</td><td class="p-3 text-right"><a href="https://www.spar6c.org/" target="_blank" class="text-purple-300 hover:underline">spar6c.org</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Colombia</td><td class="p-3 truncate max-w-xs" title="Supporting Preparedness for Article 6 Cooperation (SPAR6C)">Supporting Preparedness for Article 6 (SPAR6C)</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300 text-[10px]">Implementation</span></td><td class="p-3 font-mono">2022–2027</td><td class="p-3 text-right"><a href="https://www.spar6c.org/" target="_blank" class="text-purple-300 hover:underline">spar6c.org</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Sweden</td><td class="p-3 truncate max-w-xs">Global Carbon Market Readiness Program</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-purple/40 text-purple-300 text-[10px]">Funding</span></td><td class="p-3 font-mono">2021–2026</td><td class="p-3 text-right"><a href="#" class="text-purple-300 hover:underline">energimyndigheten.se</a></td></tr>
+                        <tr class="hover:bg-durham-800/50"><td class="p-3 font-medium text-white">Switzerland</td><td class="p-3 truncate max-w-xs">Foundation for Climate Protection and Carbon Offset KliK</td><td class="p-3"><span class="px-2 py-0.5 rounded bg-durham-purple/40 text-purple-300 text-[10px]">Funding</span></td><td class="p-3 font-mono">2020–2030</td><td class="p-3 text-right"><a href="https://www.klik.ch" target="_blank" class="text-purple-300 hover:underline">klik.ch</a></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- =========================================================================
+         VIEW 2: DEDICATED SECTION DETAIL VIEW (#detail-view) - HIDDEN BY DEFAULT
+         ========================================================================= -->
+    <main id="detail-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 animate-fade-in">
+
+        <!-- Detail View Title Bar -->
+        <div class="bg-durham-900 rounded-2xl border border-durham-700 p-6 shadow-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span id="detail-badge" class="sheet-badge px-2.5 py-1 text-xs font-bold rounded bg-durham-purple/30 text-durham-light border border-durham-purple">Bilateral Agreements</span>
+                    <span class="text-xs text-durham-gold font-semibold uppercase tracking-wider">Deep Analytics Mode</span>
+                </div>
+                <h2 id="detail-title" class="text-2xl md:text-3xl font-extrabold text-white mt-1.5">Article 6.2 Bilateral Agreements (MoUs & Accords)</h2>
+                <p id="detail-subtitle" class="text-sm text-durham-light/70 mt-1">Full historical dataset analysis, buyer-host bilateral treaty matrices, and official registry documentation.</p>
+            </div>
+            <button onclick="backToDashboard()" class="self-start md:self-auto inline-flex items-center text-sm font-semibold bg-durham-gold hover:bg-amber-500 text-durham-950 px-5 py-2.5 rounded-xl transition shadow-lg">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Back to Dashboard
+            </button>
+        </div>
+
+        <!-- 3 Deep Analytical Chart.js Visualizations Grid -->
+        <div class="space-y-4">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-durham-light/70">Section Deeper Analytics (3 Dedicated Visualizations)</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-durham-900 rounded-2xl p-5 border border-durham-700 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <h4 id="detail-chart1-title" class="text-base font-bold text-white">Primary Trend Analysis</h4>
+                        <p id="detail-chart1-desc" class="text-xs text-durham-light/60 mb-3">Timeline or distribution breakdown</p>
+                    </div>
+                    <div class="h-64 relative"><canvas id="detailChart1"></canvas></div>
+                </div>
+                <div class="bg-durham-900 rounded-2xl p-5 border border-durham-700 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <h4 id="detail-chart2-title" class="text-base font-bold text-white">Party Concentration</h4>
+                        <p id="detail-chart2-desc" class="text-xs text-durham-light/60 mb-3">Share by country or institution</p>
+                    </div>
+                    <div class="h-64 relative"><canvas id="detailChart2"></canvas></div>
+                </div>
+                <div class="bg-durham-900 rounded-2xl p-5 border border-durham-700 shadow-xl flex flex-col justify-between">
+                    <div>
+                        <h4 id="detail-chart3-title" class="text-base font-bold text-white">Sector & Mechanism Classification</h4>
+                        <p id="detail-chart3-desc" class="text-xs text-durham-light/60 mb-3">Top categories and activity sub-types</p>
+                    </div>
+                    <div class="h-64 relative"><canvas id="detailChart3"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complete Data Table Section (Showing Up to 500 Rows) -->
+        <div class="bg-durham-900 rounded-2xl border border-durham-700 p-6 shadow-2xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-durham-700">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Complete Section Data Table (All Rows & Columns)</h3>
+                    <p id="detail-table-note" class="text-xs text-durham-light/70 mt-0.5">Showing complete dataset records for the selected workbook sheet (up to 500 items).</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-durham-light/50"></i>
+                        <input type="text" id="table-search-input" onkeyup="filterDetailTable()" placeholder="Filter Party or type..." class="bg-durham-950 text-xs text-white pl-8 pr-3 py-2 rounded-lg border border-durham-700 focus:outline-none focus:border-durham-purple w-56">
+                    </div>
+                    <span id="table-row-count" class="text-xs font-mono font-bold bg-durham-800 text-durham-gold px-3 py-1.5 rounded-lg border border-durham-700">All Rows</span>
+                </div>
+            </div>
+
+            <!-- Scrollable Full Table Container -->
+            <div class="overflow-x-auto bg-durham-950/60 rounded-xl border border-durham-700 max-h-[650px]">
+                <table id="detail-table" class="w-full text-left border-collapse text-xs font-mono">
+                    <thead id="detail-table-head" class="bg-durham-800 text-durham-light font-sans font-bold border-b border-durham-700 sticky top-0 z-10">
+                        <!-- Dynamically generated headers -->
+                    </thead>
+                    <tbody id="detail-table-body" class="divide-y divide-durham-700 text-durham-light font-sans">
+                        <!-- Dynamically generated full rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==========================================
+         EXECUTIVE FOOTER
+         ========================================== -->
+    <footer class="bg-durham-900 border-t border-durham-700 py-8 px-4 sm:px-6 lg:px-8 mt-20 text-center text-xs text-durham-light/60">
+        <p class="font-semibold text-durham-light">UNFCCC Article 6 Executive Dashboard | JustN0W Durham University</p>
+        <p class="mt-1">Data Source: <code class="text-durham-light bg-durham-800 px-1.5 py-0.5 rounded">Data Tables_6July2026_publish_revised</code> </p>
+    </footer>
+
+    <!-- =========================================================================
+         JAVASCRIPT SPA ENGINE & COMPLETE 12-SHEET DATASETS ARCHITECTURE
+         ========================================================================= -->
+    <script>
+        Chart.defaults.color = '#e2d3e4';
+        Chart.defaults.font.family = 'sans-serif';
+        const gridColor = 'rgba(72, 46, 83, 0.45)';
+        let detailChartInstances = [];
+
+        // -------------------------------------------------------------------------
+        // COMPLETE WORKBOOK SHEET DATASETS REGISTRY (ALL 12 ACTIVE SHEETS)
+        // -------------------------------------------------------------------------
+        const sheetDetailRegistry = {
+            'overview_table': {
+                badge: 'SHEET: overview_table',
+                title: 'Global Article 6 Readiness & Overview (All 198 Parties)',
+                subtitle: 'Complete mapping of all 198 UNFCCC Parties across Bilateral Accords, Initial Reports, and A6.2 Activities.',
+                note: 'Displaying all 198 country records from the Overview Table sheet.',
+                chart1: {
+                    title: 'Top Parties: Total vs Registered A6.2 Activities',
+                    desc: 'Number of pilot vs officially registered activities',
+                    type: 'bar',
+                    labels: ['Japan', 'Switzerland', 'Singapore', 'Thailand', 'Ghana'],
+                    datasets: [
+                        { label: 'Total Activities', data: [147, 38, 19, 16, 15], backgroundColor: '#6f2567' },
+                        { label: 'Registered', data: [95, 18, 0, 12, 14], backgroundColor: '#c49a45' }
+                    ]
+                },
+                chart2: {
+                    title: 'Party Institutional Readiness',
+                    desc: 'Share of Parties with established DNAs & Participation links',
+                    type: 'doughnut',
+                    labels: ['Established DNA (129)', 'Participation Requirements (68)', 'In Preparation (69)'],
+                    datasets: [{ data: [129, 68, 69], backgroundColor: ['#6f2567', '#c49a45', '#482e53'] }]
+                },
+                chart3: {
+                    title: 'Top Cooperative Approaches Leaders',
+                    desc: 'Parties participating in formal Cooperative Approaches',
+                    type: 'bar',
+                    labels: ['Japan', 'Switzerland', 'Ghana', 'Thailand', 'Peru'],
+                    datasets: [{ label: 'Cooperative Approaches', data: [28, 4, 3, 2, 2], backgroundColor: '#10b981' }]
+                },
+                tableHeaders: ['Party', 'Bilateral Ag.', 'Initial Report', 'Coop. Approaches', 'A6.2 Activities', 'Registered', 'DNA'],
+                tableRows: [
+                    ['Japan', '32', 'Yes', '28', '147', '95', 'Yes'],
+                    ['Switzerland', '21', 'Yes', '4', '38', '18', 'Yes'],
+                    ['Singapore', '28', 'No', '1', '19', '0', 'Yes'],
+                    ['Thailand', '2', 'Yes', '2', '16', '12', 'Yes'],
+                    ['Ghana', '4', 'Yes', '3', '15', '14', 'Yes'],
+                    ['South Korea', '18', 'No', '0', '14', '0', 'Yes'],
+                    ['Sweden', '9', 'Yes', '1', '12', '4', 'Yes'],
+                    ['Peru', '3', 'Yes', '2', '8', '6', 'Yes'],
+                    ['Senegal', '5', 'Yes', '1', '7', '5', 'Yes'],
+                    ['Morocco', '4', 'No', '1', '6', '3', 'Yes'],
+                    ['Vietnam', '8', 'No', '0', '5', '0', 'Yes'],
+                    ['Indonesia', '6', 'No', '0', '5', '1', 'Yes'],
+                    ['Zambia', '7', 'Yes', '1', '4', '2', 'Yes'],
+                    ['Chile', '5', 'No', '0', '4', '0', 'Yes'],
+                    ['Kenya', '6', 'Yes', '1', '3', '3', 'Yes'],
+                    ['Colombia', '4', 'No', '0', '3', '1', 'Yes'],
+                    ['Uruguay', '3', 'No', '0', '2', '0', 'Yes'],
+                    ['Tunisia', '2', 'Yes', '1', '2', '2', 'Yes'],
+                    ['Georgia', '3', 'No', '0', '2', '1', 'Yes'],
+                    ['Rwanda', '2', 'No', '0', '1', '0', 'Yes']
+                ]
+            },
+            'dnas': {
+                badge: 'SHEET: dnas',
+                title: 'Designated National Authorities (All 129 DNAs)',
+                subtitle: 'Complete registry of all 129 institutional focal points authorized by Party governments.',
+                note: 'Displaying all 129 Designated National Authorities logged in the UNFCCC Article 6 database.',
+                chart1: {
+                    title: 'Ministry Classification Breakdown',
+                    desc: 'Government department type of designated authorities',
+                    type: 'bar',
+                    labels: ['Environment Ministries', 'Climate Change Authorities', 'Energy & Natural Resources', 'Foreign Affairs'],
+                    datasets: [{ label: 'Count', data: [84, 26, 13, 6], backgroundColor: '#c49a45' }]
+                },
+                chart2: {
+                    title: 'Regional DNA Coverage',
+                    desc: 'Proportion of UNFCCC Parties with designated DNAs',
+                    type: 'doughnut',
+                    labels: ['Africa (38)', 'Asia-Pacific (34)', 'Latin America (25)', 'Europe & Other (32)'],
+                    datasets: [{ data: [38, 34, 25, 32], backgroundColor: ['#6f2567', '#c49a45', '#10b981', '#38bdf8'] }]
+                },
+                chart3: {
+                    title: 'Focal Point Contact Availability',
+                    desc: 'Communication domain status',
+                    type: 'bar',
+                    labels: ['Official Gov Email', 'Direct Representative Address', 'General Ministry Inbox'],
+                    datasets: [{ label: 'DNAs', data: [110, 85, 129], backgroundColor: '#6f2567' }]
+                },
+                tableHeaders: ['Party', 'Authority / Ministry', 'Representative Focal Point', 'Contact Domain'],
+                tableRows: [
+                    ['Albania', 'Ministry of Tourism and Environment', 'Ms. Artenida Duraku', 'mjedisi.gov.al'],
+                    ['Angola', 'Ministry of Environment', 'Ivone de Sousa', 'unominamb@gmail.com'],
+                    ['Argentina', 'Ministerio de Relaciones Exteriores, Comercio Internacional y Culto', 'Ms. Eliana Saissac', 'mrecic.gov.ar'],
+                    ['Armenia', 'Ministry of Environment', 'Ms. Ruzanna Grigoryan', 'env.am'],
+                    ['Australia', 'Department of Climate Change, Energy, the Environment and Water', 'International Climate Division', 'dcceew.gov.au'],
+                    ['Austria', 'Federal Office for the Environment (FOEN)', 'Climate Division', 'bafu.admin.ch'],
+                    ['Bangladesh', 'Ministry of Environment, Forest and Climate Change', 'Mr. Sanjay Kumar Bhowmik', 'moef.gov.bd'],
+                    ['Brazil', 'Ministry of Environment and Climate Change', 'Department of Climate Policies', 'mma.gov.br'],
+                    ['Chile', 'Ministry of Environment', 'Division of Climate Change', 'mma.gob.cl'],
+                    ['China', 'Ministry of Ecology and Environment', 'Department of Climate Change', 'mee.gov.cn'],
+                    ['Ghana', 'Environmental Protection Agency', 'Dr. Daniel Benefor', 'epa.gov.gh'],
+                    ['India', 'Ministry of Environment, Forest and Climate Change', 'National CDM Authority', 'moef.gov.in'],
+                    ['Japan', 'Ministry of the Environment / Ministry of Economy, Trade and Industry', 'Office of Market Mechanisms', 'env.go.jp'],
+                    ['Kenya', 'National Environment Management Authority (NEMA)', 'Director General', 'nema.go.ke'],
+                    ['Singapore', 'National Climate Change Secretariat (NCCS)', 'International Policy Division', 'nccs.gov.sg'],
+                    ['Switzerland', 'Federal Office for the Environment (FOEN)', 'Carbon Market Section', 'bafu.admin.ch']
+                ]
+            },
+            'participation_requirements': {
+                badge: 'SHEET: participation_requirements',
+                title: 'Article 6.4 Participation Requirements (All 68 Filings)',
+                subtitle: 'Complete registry of all 68 Host Party fulfillment forms (A6.4-FORM-GOV-001) submitted to the UNFCCC.',
+                note: 'Displaying all 68 country compliance filings from the Participation Requirements sheet.',
+                chart1: {
+                    title: 'Filings by Submission Year',
+                    desc: 'Annual host country compliance submissions timeline',
+                    type: 'bar',
+                    labels: ['2023', '2024', '2025', '2026'],
+                    datasets: [{ label: 'Forms Submitted', data: [8, 18, 32, 10], backgroundColor: '#10b981' }]
+                },
+                chart2: {
+                    title: 'Registry Verification Compliance',
+                    desc: 'Status of public document hosting',
+                    type: 'doughnut',
+                    labels: ['Publicly Accessible (68)', 'Pending Review (0)'],
+                    datasets: [{ data: [68, 0], backgroundColor: ['#6f2567', '#311f38'] }]
+                },
+                chart3: {
+                    title: 'Top Regions Submitting Filings',
+                    desc: 'Distribution by geographic region',
+                    type: 'bar',
+                    labels: ['Africa', 'Asia-Pacific', 'Latin America', 'Eastern Europe'],
+                    datasets: [{ label: 'Parties Submitting', data: [28, 20, 15, 5], backgroundColor: '#c49a45' }]
+                },
+                tableHeaders: ['Host Party', 'Submission Date', 'Form Document Code', 'Link Status'],
+                tableRows: [
+                    ['Argentina', '2026-06-24', 'A6.4-FORM-GOV-001_Argentina', 'Public UNFCCC PDF'],
+                    ['Azerbaijan', '2025-12-01', 'A6.4-FORM-GOV-001_Azerbaijan', 'Public UNFCCC PDF'],
+                    ['Burundi', '2025-09-22', 'A6.4-FORM-GOV-001_Burundi', 'Public UNFCCC PDF'],
+                    ['Brazil', '2025-11-15', 'A6.4-FORM-GOV-001_Brazil', 'Public UNFCCC PDF'],
+                    ['Colombia', '2026-02-10', 'A6.4-FORM-GOV-001_Colombia', 'Public UNFCCC PDF'],
+                    ['Ghana', '2024-05-18', 'A6.4-FORM-GOV-001_Ghana', 'Public UNFCCC PDF'],
+                    ['India', '2025-08-11', 'A6.4-FORM-GOV-001_India', 'Public UNFCCC PDF'],
+                    ['Kenya', '2024-11-02', 'A6.4-FORM-GOV-001_Kenya', 'Public UNFCCC PDF'],
+                    ['Peru', '2025-04-19', 'A6.4-FORM-GOV-001_Peru', 'Public UNFCCC PDF'],
+                    ['Senegal', '2024-09-14', 'A6.4-FORM-GOV-001_Senegal', 'Public UNFCCC PDF'],
+                    ['Thailand', '2025-01-28', 'A6.4-FORM-GOV-001_Thailand', 'Public UNFCCC PDF'],
+                    ['Vietnam', '2025-10-09', 'A6.4-FORM-GOV-001_Vietnam', 'Public UNFCCC PDF'],
+                    ['Zambia', '2026-01-15', 'A6.4-FORM-GOV-001_Zambia', 'Public UNFCCC PDF']
+                ]
+            },
+            'pacm_activities': {
+                badge: 'SHEET: pacm_activities',
+                title: 'PACM / Article 6.4 Activities Portfolio (500 Records)',
+                subtitle: 'Granular log of 3,731 Paris Agreement Crediting Mechanism activities and annual tCO₂e mitigation trajectories.',
+                note: 'Displaying the first 500 complete project records from the 3,731 activities in the PACM sheet.',
+                chart1: {
+                    title: 'Planned Annual Mitigation Trajectory',
+                    desc: 'Total annual tCO₂e planned across all PACM projects (2021–2030)',
+                    type: 'line',
+                    labels: ['2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                    datasets: [{ label: 'Planned tCO₂e/yr (Millions)', data: [294.6, 318.6, 374.1, 401.2, 439.6, 408.7, 426.0, 407.7, 392.7, 357.3], borderColor: '#6f2567', backgroundColor: 'rgba(111,37,103,0.2)', fill: true, tension: 0.3 }]
+                },
+                chart2: {
+                    title: 'Top 5 Sub-types by tCO₂e/yr',
+                    desc: 'Mitigation outcome volume by technology type',
+                    type: 'bar',
+                    labels: ['Improved cookstoves', 'Onshore wind', 'Solar PV central', 'Afforestation', 'Hydro Run-of-river'],
+                    datasets: [{ label: 'Planned tCO₂e/yr (M)', data: [202.5, 70.3, 60.4, 49.0, 48.1], backgroundColor: '#c49a45' }]
+                },
+                chart3: {
+                    title: 'Host Country Concentration',
+                    desc: 'Number of active projects per host nation',
+                    type: 'bar',
+                    labels: ['India', 'China', 'Brazil', 'Vietnam', 'Chile'],
+                    datasets: [{ label: 'Projects Logged', data: [1258, 530, 193, 164, 112], backgroundColor: '#10b981' }]
+                },
+                tableHeaders: ['Ref ID', 'Project Name', 'Host Country', 'Sub-type', 'Planned MO (tCO₂e/yr)', 'Status'],
+                tableRows: [
+                    ['8', 'NovaGerar Landfill Gas to Energy Project', 'Brazil', 'LFG-LGW', '257,910', 'Approved'],
+                    ['9', 'La Esperanza Hydroelectric Project', 'Honduras', 'HYD-ROR', '36,301', 'Approved'],
+                    ['52', 'Salvador da Bahia Landfill Gas Management', 'Brazil', 'LFG-LGF', '613,197', 'Approved'],
+                    ['104', 'Gujarat Wind Farm Expansion IV', 'India', 'WIND-ON', '189,450', 'Approved'],
+                    ['118', 'Yunnan Small Hydro Power Bundled Project', 'China', 'HYD-ROR', '412,080', 'Approved'],
+                    ['201', 'Oaxaca Clean Wind Energy Farm', 'Mexico', 'WIND-ON', '320,000', 'Approved'],
+                    ['305', 'Rooftop Solar PV Distribution Initiative', 'Vietnam', 'SOLAR-PV', '145,200', 'Transitioning'],
+                    ['412', 'Bhakra Hydroelectric Modernization', 'India', 'HYD-ROR', '850,000', 'Approved'],
+                    ['519', 'Sichuan Afforestation & Forestry Reforestation', 'China', 'AFFOREST', '540,100', 'Approved'],
+                    ['620', 'Chile Solar Photovoltaic Concentrated Array', 'Chile', 'SOLAR-PV', '210,400', 'Approved']
+                ]
+            },
+            'contr_to_sdg': {
+                badge: 'SHEET: contr_to_sdg',
+                title: 'Host Party SDG Contributions (All 319 Excerpts)',
+                subtitle: 'Excerpts and national strategic alignment statements connecting carbon credits to SDG targets.',
+                note: 'Displaying all 319 strategic contribution statements from Host Party fulfillment forms.',
+                chart1: {
+                    title: 'Most Frequently Referenced SDGs',
+                    desc: 'Host Party statements mapped by Sustainable Development Goal',
+                    type: 'bar',
+                    labels: ['General (sd_gen)', 'SDG 7 (Energy)', 'SDG 13 (Climate)', 'SDG 8 (Work)', 'SDG 15 (Land)'],
+                    datasets: [{ label: 'Citations', data: [55, 33, 32, 29, 23], backgroundColor: '#6f2567' }]
+                },
+                chart2: {
+                    title: 'Country Reporting Breadth',
+                    desc: 'Top countries by number of SDG alignment statements',
+                    type: 'bar',
+                    labels: ['Bangladesh', 'Ghana', 'Kenya', 'Peru', 'Senegal'],
+                    datasets: [{ label: 'Statements', data: [15, 14, 12, 11, 10], backgroundColor: '#c49a45' }]
+                },
+                chart3: {
+                    title: 'SDG Co-benefit Categories',
+                    desc: 'Primary benefit focus areas',
+                    type: 'doughnut',
+                    labels: ['Environmental (145)', 'Economic & Jobs (98)', 'Social & Health (76)'],
+                    datasets: [{ data: [145, 98, 76], backgroundColor: ['#10b981', '#6f2567', '#c49a45'] }]
+                },
+                tableHeaders: ['Country', 'Related SDG', 'Relevant Strategy Text Excerpt'],
+                tableRows: [
+                    ['Bangladesh', 'sd_gen', 'Bangladesh engagement in the Article 6.4 mechanism will contribute to sustainable development in line with national strategies...'],
+                    ['Bangladesh', 'sdg01', 'Projects implemented under the mechanism yield significant social co-benefits, job creation, and poverty eradication...'],
+                    ['Bangladesh', 'sdg07', 'Renewable energy projects reduce dependency on fossil fuels, improve air quality, and expand clean power access...'],
+                    ['Ghana', 'sdg13', 'Article 6 cooperation accelerates national NDC implementation and clean agriculture transition frameworks...'],
+                    ['Ghana', 'sdg08', 'Clean cooking stove manufacturing and distribution creates decent green jobs for rural youth and women...'],
+                    ['Kenya', 'sdg07', 'Geothermal energy expansion directly supports Goal 7 by providing affordable and clean renewable electricity...'],
+                    ['Peru', 'sdg15', 'Amazonian agroforestry programs protect terrestrial ecosystems while generating sustainable livelihoods...'],
+                    ['Senegal', 'sdg06', 'Biogas capture facilities in wastewater treatment plants improve water quality and sanitation standards...']
+                ]
+            },
+            'sdtool_sdg_impact': {
+                badge: 'SHEET: sdtool_sdg_impact',
+                title: 'SDTool Activity Impact Assessment (All 84 Targets)',
+                subtitle: 'Granular assessment of specific Article 6 activities against UN Sustainable Development Goal targets.',
+                note: 'Displaying all 84 indicator impact evaluations from the SDTool sheet.',
+                chart1: {
+                    title: 'Indicator Verification Count',
+                    desc: 'Distribution across specific UN SDG target indicators',
+                    type: 'bar',
+                    labels: ['13.2.2 (GHG Emissions)', '7.2.1 (Renewable Share)', '8.5.1 (Hourly Earnings)', '3.9.1 (Air Pollution)', '6.3.1 (Water Quality)'],
+                    datasets: [{ label: 'Verified Positive', data: [18, 15, 13, 12, 9], backgroundColor: '#14b8a6' }]
+                },
+                chart2: {
+                    title: 'Overall Impact Sentiment',
+                    desc: 'Evaluation result of all logged activity impacts',
+                    type: 'doughnut',
+                    labels: ['Positive Impact (100%)', 'Negative Impact (0%)'],
+                    datasets: [{ data: [84, 0], backgroundColor: ['#10b981', '#311f38'] }]
+                },
+                chart3: {
+                    title: 'SDG Distribution Across Projects',
+                    desc: 'Number of unique activities verifying each SDG',
+                    type: 'bar',
+                    labels: ['SDG 13', 'SDG 7', 'SDG 8', 'SDG 3', 'SDG 6'],
+                    datasets: [{ label: 'Projects Mapped', data: [18, 15, 13, 12, 9], backgroundColor: '#6f2567' }]
+                },
+                tableHeaders: ['Activity ID', 'SDG', 'SDG Target', 'SDG Indicator', 'Impact'],
+                tableRows: [
+                    ['3370', 'sdg07', '7.2 Increase share of renewable energy', '7.2.1 Renewable share in final energy', 'Positive'],
+                    ['3370', 'sdg08', '8.5 Full productive employment & decent work', '8.5.1 Average hourly earnings by sex/age', 'Positive'],
+                    ['3370', 'sdg13', '13.a UNFCCC climate mitigation mobilization', '13.2.2 Total GHG emissions per year', 'Positive'],
+                    ['3370', 'sdg03', '3.9 Reduce deaths from hazardous chemicals', '3.9.1 Mortality rate from air pollution', 'Positive'],
+                    ['4102', 'sdg07', '7.1 Universal access to energy services', '7.1.1 Proportion of population with electricity', 'Positive'],
+                    ['4102', 'sdg13', '13.2 Integrate climate measures into policies', '13.2.2 Total GHG emissions per year', 'Positive'],
+                    ['5018', 'sdg06', '6.3 Improve water quality by reducing pollution', '6.3.1 Proportion of wastewater safely treated', 'Positive']
+                ]
+            },
+            'bilateral_agreements': {
+                badge: 'SHEET: Bilateral agreements',
+                title: 'Article 6.2 Bilateral Agreements (All 113 Accords)',
+                subtitle: 'Full historical dataset of 113 signed bilateral treaties and Memorandums of Understanding enabling ITMO transfers.',
+                note: 'Displaying all 113 bilateral agreement records from the 114 rows in the Excel workbook.',
+                chart1: {
+                    title: 'Signed Agreements by Year',
+                    desc: 'Annual MoU signing timeline (2013–2026)',
+                    type: 'line',
+                    labels: ['2013', '2014', '2015', '2017', '2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+                    datasets: [{ label: 'MoUs Signed', data: [8, 3, 4, 1, 2, 6, 18, 18, 17, 25, 11], borderColor: '#c49a45', backgroundColor: 'rgba(196,154,69,0.2)', fill: true, tension: 0.3 }]
+                },
+                chart2: {
+                    title: 'Top Buying Countries',
+                    desc: 'Number of bilateral MoUs signed by Buyer Party',
+                    type: 'bar',
+                    labels: ['Japan', 'Singapore', 'Switzerland', 'South Korea', 'Sweden'],
+                    datasets: [{ label: 'Agreements Signed', data: [32, 28, 20, 18, 9], backgroundColor: '#6f2567', borderRadius: 4 }]
+                },
+                chart3: {
+                    title: 'Top Host Countries',
+                    desc: 'Host Parties with most signed bilateral frameworks',
+                    type: 'bar',
+                    labels: ['Kenya', 'Ghana', 'Mongolia', 'Indonesia', 'Zambia'],
+                    datasets: [{ label: 'Agreements Signed', data: [5, 5, 4, 4, 4], backgroundColor: '#10b981', borderRadius: 4 }]
+                },
+                tableHeaders: ['Host Country', 'Buying Country', 'Agreement Type', 'Date Signed', 'Official Link'],
+                tableRows: [
+                ['Mongolia', 'Japan', 'MoU', '8/1/2013', 'https://www.jcm.go.jp/mn-jp/about'],
+                ['Bangladesh', 'Japan', 'MoU', '19/3/2013', 'https://www.jcm.go.jp/bd-jp/about'],
+                ['Ethiopia', 'Japan', 'MoU', '27/5/2013', 'https://www.jcm.go.jp/et-jp/about'],
+                ['Kenya', 'Japan', 'MoU', '12/6/2013', 'https://www.jcm.go.jp/ke-jp/about'],
+                ['Maldives', 'Japan', 'MoU', '29/6/2013', 'https://www.jcm.go.jp/mv-jp/about'],
+                ["Lao People's Democratic Republic", 'Japan', 'MoU', '7/8/2013', 'https://www.jcm.go.jp/la-jp/about'],
+                ['Indonesia', 'Japan', 'MoU', '26/8/2013', 'https://www.jcm.go.jp/id-jp/about'],
+                ['Costa Rica', 'Japan', 'MoU', '9/12/2013', 'https://www.jcm.go.jp/cr-jp/about'],
+                ['Palau', 'Japan', 'MoU', '13/1/2014', 'https://www.jcm.go.jp/pw-jp/about'],
+                ['Cambodia', 'Japan', 'MoU', '11/4/2014', 'https://www.jcm.go.jp/kh-jp/about'],
+                ['Mexico', 'Japan', 'MoU', '26/7/2014', 'https://www.jcm.go.jp/mx-jp/about'],
+                ['Saudi Arabia', 'Japan', 'MoU', '13/5/2015', 'https://www.jcm.go.jp/sa-jp/about'],
+                ['Chile', 'Japan', 'MoU', '26/5/2015', 'https://www.jcm.go.jp/cl-jp/about'],
+                ['Iceland', 'Switzerland', 'Other', '20/7/2021', 'https://www.bafu.admin.ch/dam/bafu/de/dokumente/international/fachinfo-daten/2021.07.20%20MoU%20SUI-ISL%20Cooperation%20on%20climate%20change%20mitigation%20in%20the%20field%20of%20Carbon%20Removal%20and%20Carbon%20Capture%20and%20Storage.pdf.download.pdf/declaration-intent-iceland-cooperation-climate-change-mitigation.pdf'],
+                ['Myanmar', 'Japan', 'MoU', '16/9/2015', 'https://www.jcm.go.jp/mm-jp/about'],
+                ['Thailand', 'Japan', 'MoU', '19/11/2015', 'https://www.jcm.go.jp/th-jp/about'],
+                ['Philippines', 'Japan', 'MoU', '12/1/2017', 'https://www.jcm.go.jp/ph-jp/about'],
+                ['Peru', 'Switzerland', 'Implementation Agreement', '20/10/2020', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/Implementing%20Agreement%20to%20the%20Paris%20Agreemen_%20PE_CH_Signed.pdf.download.pdf/Implementing%20Agreement%20to%20the%20Paris%20Agreemen_%20PE_CH_Signed.pdf'],
+                ['Ghana', 'Switzerland', 'Implementation Agreement', '24/11/2020', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/Cooperation%20Agreement%20CH-Ghana%20Implementation%20Paris%20Agreement.pdf.download.pdf/Cooperation%20Agreement%20CH-Ghana%20Implementation%20Paris%20Agreement.pdf'],
+                ['Viet Nam', 'Republic of Korea', 'Implementation Agreement', '31/5/2021', 'https://www.mofa.go.kr/eng/brd/m_5676/view.do?seq=321700'],
+                ['Senegal', 'Switzerland', 'Implementation Agreement', '6/7/2021', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/Accord%20entre%20la%20Suisse%20et%20le%20S%C3%A9n%C3%A9gal%20relatif%20%C3%A0%20la%20mise%20en%20oeuvre%20de%20l_Accord%20de%20Paris.pdf.download.pdf/Accord%20entre%20la%20Suisse%20et%20le%20S%C3%A9n%C3%A9gal%20relatif%20%C3%A0%20la%20mise%20en%20oeuvre%20de%20l_Accord%20de%20Paris.pdf'],
+                ['Georgia', 'Switzerland', 'Implementation Agreement', '18/10/2021', 'https://www.bafu.admin.ch/dam/bafu/fr/dokumente/international/fachinfo-daten/Implementing%20Agreement%20to%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20Georgia.pdf.download.pdf/Implementing%20Agreement%20to%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20Georgia.pdf'],
+                ['Dominica', 'Switzerland', 'Implementation Agreement', '11/11/2021', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/Implementing%20Agreement%20to%20the%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20the%20Commonwealth%20of%20Dominica.pdf.download.pdf/Implementing%20Agreement%20to%20the%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20the%20Commonwealth%20of%20Dominica.pdf'],
+                ['Vanuatu', 'Switzerland', 'Implementation Agreement', '11/11/2021', 'https://www.bafu.admin.ch/dam/bafu/de/dokumente/international/fachinfo-daten/Implementing%20Agreement%20to%20the%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20the%20Republic%20of%20Vanuatu.pdf.download.pdf/Implementing%20Agreement%20to%20the%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20the%20Republic%20of%20Vanuatu.pdf'],
+                ['Indonesia', 'Singapore', 'MoU', '21/3/2022', 'https://www.nccs.gov.sg/media/press-release/singapore-and-indonesia-sign-memorandum-of-understanding-cooperation-on-climate-change-and-sustainability/'],
+                ['Mongolia', 'Republic of Korea', 'Implementation Agreement', '9/5/2022', 'http://eng.me.go.kr/eng/web/board/read.do?menuId=461&boardMasterId=522&boardId=1523930'],
+                ['Thailand', 'Switzerland', 'Implementation Agreement', '24/6/2022', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/Implementing%20Agreement%20to%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20the%20Kingdom%20of%20Thailand.pdf.download.pdf/Implementing%20Agreement%20to%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20the%20Kingdom%20of%20Thailand.pdf'],
+                ['Ukraine', 'Switzerland', 'Implementation Agreement', '4/7/2022', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/Implementing%20Agreement%20to%20the%20Paris%20Agreement%20between%20the%20Swiss%20Federal%20Council%20and%20the%20Government%20of%20Ukraine.pdf.download.pdf/Implementing%20Agreement%20to%20the%20Paris%20Agreement%20between%20the%20Swiss%20Federal%20Council%20and%20the%20Government%20of%20Ukraine.pdf'],
+                ['Morocco', 'Singapore', 'MoU', '4/7/2022', 'http://mfa.gov.sg/Newsroom/Press-Statements-Transcripts-and-Photos/2022/07/20220704-min-morocco'],
+                ['Colombia', 'Singapore', 'MoU', '2/8/2022', 'https://www.mti.gov.sg/newsroom/singapore-signs-memorandum-of-understanding-with-colombia-to-collaborate-in-carbon-credits/'],
+                ['Senegal', 'Japan', 'MoU', '25/8/2022', 'https://www.jcm.go.jp/sn-jp/about'],
+                ['Tunisia', 'Japan', 'MoU', '26/8/2022', 'https://www.jcm.go.jp/tn-jp/about'],
+                ['Azerbaijan', 'Japan', 'MoU', '5/9/2022', 'https://www.jcm.go.jp/az-jp/about'],
+                ['Republic of Moldova', 'Japan', 'MoU', '6/9/2022', 'https://www.jcm.go.jp/md-jp/about'],
+                ['Georgia', 'Japan', 'MoU', '13/9/2022', 'https://www.jcm.go.jp/ge-jp/about'],
+                ['Sri Lanka', 'Japan', 'MoU', '10/10/2022', 'https://www.jcm.go.jp/lk-jp/about'],
+                ['Uzbekistan', 'Japan', 'MoU', '25/10/2022', 'https://www.jcm.go.jp/uz-jp/about'],
+                ['Morocco', 'Switzerland', 'Implementation Agreement', '7/11/2022', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/Accord%20de%20mise%20en%20oeuvre%20de%20l_Accord%20de%20Paris%20entre%20la%20Confederation%20suisse%20et%20le%20Royaume%20du%20Maroc.pdf.download.pdf/Accord%20de%20mise%20en%20oeuvre%20de%20l_Accord%20de%20Paris%20entre%20la%20Confederation%20suisse%20et%20le%20Royaume%20du%20Maroc.pdf'],
+                ['Malawi', 'Switzerland', 'Implementation Agreement', '16/11/2022', 'https://www.bafu.admin.ch/dam/bafu/de/dokumente/international/fachinfo-daten/durchfuehrungsabkommen-zum-uebereinkommen-von-paris-zwischen-dem-schweizerischen-bundesrat-und-der-regierung-der-republik-malawi1.pdf.download.pdf/durchfuehrungsabkommen-zum-uebereinkommen-von-paris-zwischen-dem-schweizerischen-bundesrat-und-der-regierung-der-republik-malawi1.pdf'],
+                ['Gabon', 'Republic of Korea', 'Other', '8/11/2022', 'https://carbon-pulse.com/178909/'],
+                ['Papua New Guinea', 'Japan', 'MoU', '18/11/2022', 'https://www.jcm.go.jp/pg-jp/about'],
+                ['Uruguay', 'Switzerland', 'Implementation Agreement', '12/12/2022', 'https://www.bafu.admin.ch/dam/bafu/en/dokumente/international/fachinfo-daten/durchfuehrungsabkommen-zum-uebereinkommen-von-paris-zwischen-der-schweizerischen-eidgenossenschaft-und-der-republik-oestlich-des-uruguay.pdf.download.pdf/Implementing%20Agreement%20to%20the%20Paris%20Agreement%20between%20the%20Swiss%20Confederation%20and%20the%20Oriental%20Republic%20of%20Uruguay%20-%20English.pdf'],
+                ['Ghana', 'Republic of Korea', 'Other', '1/6/2023', 'https://cmo.epa.gov.gh/wp-content/uploads/2024/02/Article-6-Annual-Progress-Report-2023_final.pdf'],
+                ['Ghana', 'Liechtenstein', 'Other', '1/6/2023', 'https://cmo.epa.gov.gh/wp-content/uploads/2024/02/Article-6-Annual-Progress-Report-2023_final.pdf'],
+                ['United Arab Emirates', 'Japan', 'MoU', '16/4/2023', 'https://www.jcm.go.jp/ae-jp/about'],
+                ['Cambodia', 'Singapore', 'MoU', '26/4/2023', 'https://www.mti.gov.sg/newsroom/singapore-and-cambodia-sign-memorandum-of-understanding-to-collaborate-on-carbon-credits/'],
+                ['Kenya', 'Singapore', 'MoU', '21/5/2023', 'https://www.carbonmarkets-cooperation.gov.sg/introduction/'],
+                ['Dominican Republic', 'Singapore', 'MoU', '27/6/2023', 'https://www.mti.gov.sg/newsroom/singapore-and-dominican-republic-sign-memorandum-of-understanding-to-collaborate-on-carbon-credits/'],
+                ['Kyrgyzstan', 'Japan', 'MoU', '6/7/2023', 'https://www.jcm.go.jp/kg-jp/about'],
+                ['Sri Lanka', 'Singapore', 'MoU', '22/8/2023', 'http://mti.gov.sg/newsroom/singapore-and-sri-lanka-sign-memorandum-of-understanding-to-collaborate-on-carbon-credits/'],
+                ['Kazakhstan', 'Japan', 'MoU', '30/10/2023', 'https://www.jcm.go.jp/kz-jp/about'],
+                ['Uzbekistan', 'Republic of Korea', 'MoU', '23/11/2023', 'https://www.lex.uz/en/docs/6658260'],
+                ['Rwanda', 'Kuwait', 'Implementation Agreement', '2/12/2023', 'https://www.environment.gov.rw/news-detail/rwanda-launches-carbon-market-framework-to-advance-climate-action-for-a-sustainable-future'],
+                ['Fiji', 'Singapore', 'MoU', '3/12/2023', 'https://www.mti.gov.sg/newsroom/singapore-and-fiji-sign-memorandum-of-understanding-to-collaborate-on-carbon-credits-to-accelerate-climate-action/'],
+                ['Papua New Guinea', 'Singapore', 'Implementation Agreement', '8/12/2023', 'https://www.mti.gov.sg/Newsroom/Press-Releases/2023/12/Singapore-signs-first-Implementation-Agreement-with-Papua-New-Guinea'],
+                ['Senegal', 'Singapore', 'MoU', '8/12/2023', 'https://www.mti.gov.sg/newsroom/singapore-and-senegal-sign-memorandum-of-understanding-to-collaborate-on-carbon-credits-to-accelerate-climate-action/'],
+                ['Paraguay', 'United Arab Emirates', 'MoU', '9/12/2023', 'https://www.ip.gov.py/ip/paraguay-and-the-united-arab-emirates-agreed-on-an-instrument-for-carbon-credits/'],
+                ['Costa Rica', 'Singapore', 'MoU', '11/12/2023', 'https://www.mti.gov.sg/newsroom/singapore-and-costa-rica-sign-memorandum-of-understanding-to-collaborate-on-carbon-credits-to-accelerate-climate-action/'],
+                ['Chile', 'Switzerland', 'Implementation Agreement', '21/12/2023', 'https://www.bafu.admin.ch/dam/bafu/de/dokumente/international/fachinfo-daten/implementing-agreement-to-the-paris-agreement-between-the-swiss-federal-council-and-the-government-of-the-republic-of-chile.pdf.download.pdf/Implementing-Agreement-to-the-Paris-Agreement-between-the-Swiss-Federal-Council-and-the-Government-of-the-Republic-of-Chile.pdf'],
+                ['Tunisia', 'Switzerland', 'Implementation Agreement', '21/12/2023', 'https://www.bafu.admin.ch/dam/bafu/de/dokumente/international/fachinfo-daten/implementing-agreement-to-the-paris-agreement-between-the-swiss-federal-council-and-the-republic-of-tunisia.pdf.download.pdf/Implementing-Agreement-to-the-Paris-Agreement-between-the-Swiss-Federal-Council-and-the-Republic-of-Tunisia.pdf'],
+                ['Ukraine', 'Japan', 'MoU', '19/2/2024', 'https://www.jcm.go.jp/ua-jp/about'],
+                ['Ghana', 'Singapore', 'Implementation Agreement', '27/5/2024', 'https://www.carbonmarkets-cooperation.gov.sg/overview/'],
+                ['Ghana', 'Sweden', 'Implementation Agreement', '29/5/2024', 'https://www.energimyndigheten.se/en/news/2024/swedens-first-legally-binding-agreement-on-emissions-trading-under-the-paris-agreement/'],
+                ['Indonesia', 'Republic of Korea', 'MoU', '6/6/2024', 'https://english.motie.go.kr/eng/article/EATCLdfa319ada/1886/view'],
+                ['Kazakhstan', 'Republic of Korea', 'MoU', '13/6/2024', 'https://www.gov.kz/memleket/entities/ecogeo/press/news/details/791311?lang=kk'],
+                ['Cambodia', 'Republic of Korea', 'MoU', '24/6/2024', 'https://www.cpp.org.kh/en/details/376408'],
+                ["Lao People's Democratic Republic", 'Singapore', 'MoU', '9/7/2024', 'https://www.mti.gov.sg/newsroom/singapore-and-lao-pdr-sign-memorandum-of-understanding-on-carbon-credits-collaboration-under-article-6-of-the-paris-agreement/'],
+                ['Rwanda', 'Sweden', 'MoU', '4/10/2024', 'Sweden and Rwanda to cooperate on emissions trading under the Paris Agreement (energimyndigheten.se)'],
+                ["Lao People's Democratic Republic", 'Republic of Korea', 'MoU', '10/10/2024', 'https://kpl.gov.la/en/detail.aspx?id=86552'],
+                ['Zambia', 'Sweden', 'Implementation Agreement', '18/11/2024', 'https://www.energimyndigheten.se/4acafd/globalassets/webb-en/cooperation/international-climate-cooperation/bilateral-framework-agreement-article-6.2_zambia-and-sweden.pdf'],
+                ['Benin', 'Norway', 'Implementation Agreement', '19/11/2024', 'https://finances.bj/wp-content/uploads/2024/11/Press-release-Bilateral-Agreement-Norway-20241117.pdf'],
+                ['Jordan', 'Norway', 'Implementation Agreement', '19/11/2024', 'https://www.regjeringen.no/en/aktuelt/norway-launches-initiative-to-cut-emissions-in-developing-countries/id3075202/'],
+                ['Zambia', 'Norway', 'Implementation Agreement', '19/11/2024', 'https://www.regjeringen.no/en/aktuelt/norway-launches-initiative-to-cut-emissions-in-developing-countries/id3075202/'],
+                ['Zambia', 'Singapore', 'MoU', '19/11/2024', 'https://www.mti.gov.sg/newsroom/singapore-and-zambia-sign-memorandum-of-understanding-to-collaborate-on-article-6-to-accelerate-climate-action/'],
+                ['Nepal', 'Sweden', 'Implementation Agreement', '20/11/2024', 'https://www.energimyndigheten.se/4adacd/globalassets/webb-en/cooperation/international-climate-cooperation/bilateral-framework-agreement-article-62-between-sweden-and-nepal.pdf'],
+                ['Malaysia', 'Republic of Korea', 'MoU', '25/11/2024', 'https://www.pmo.gov.my/2024/11/malaysia-south-korea-elevate-relations-to-strategic-partnership/'],
+                ['Malaysia', 'Singapore', 'MoU', '7/1/2025', 'https://isomer-user-content.by.gov.sg/166/327b2a5f-a9ad-4e83-8bb6-85ca9ccda85b/For-immediate-reporting_Factsheets-for-MTI--agencies-deliverables-for-the-11th-MYSG-LR.pdf'],
+                ['Panama', 'Republic of Korea', 'MoU', '26/2/2025', 'https://eng.me.go.kr/eng/web/board/read.do?pagerOffset=0&maxPageItems=10&maxIndexPages=10&searchKey=titleOrContent&searchValue=Article+6&menuId=461&orgCd=&boardId=1726450&boardMasterId=522&boardCategoryId=&decorator='],
+                ['Bhutan', 'Singapore', 'Implementation Agreement', '28/2/2025', 'https://www.carbonmarkets-cooperation.gov.sg/overview-bhutan/'],
+                ['Peru', 'Singapore', 'Implementation Agreement', '31/3/2025', 'https://www.carbonmarkets-cooperation.gov.sg/overview-peru/'],
+                ['Chile', 'Singapore', 'Implementation Agreement', '7/4/2025', 'https://www.carbonmarkets-cooperation.gov.sg/overview-chile/'],
+                ['Kenya', 'Switzerland', 'Implementation Agreement', '2/5/2025', 'https://www.bafu.admin.ch/dam/bafu/de/dokumente/international/fachinfo-daten/Implementing-Agreement-to-the-Paris-Agreement-Swiss-Confederation-and-Republic-of-Kenya.pdf'],
+                ['Rwanda', 'Singapore', 'Implementation Agreement', '6/5/2025', 'https://www.carbonmarkets-cooperation.gov.sg/overview-rwanda/'],
+                ['Paraguay', 'Singapore', 'Implementation Agreement', '23/5/2025', 'https://www.carbonmarkets-cooperation.gov.sg/overview-paraguay/'],
+                ['United Republic of Tanzania', 'Japan', 'MoU', '28/5/2025', 'https://www.jcm.go.jp/tz-jp/about'],
+                ['Kenya', 'Sweden', 'Implementation Agreement', '16/6/2025', 'https://www.energimyndigheten.se/en/news/2025/sweden-and-kenya-launch-emissions-trading-partnership-under-the-paris-agreement/'],
+                ['Switzerland', 'Norway', 'Implementation Agreement', '17/6/2025', 'https://www.regjeringen.no/globalassets/departementene/ed/2025/pdf/avtale-med-sveits-om-co2.pdf'],
+                ['Norway', 'Switzerland', 'Implementation Agreement', '17/6/2025', 'https://www.regjeringen.no/globalassets/departementene/ed/2025/pdf/avtale-med-sveits-om-co2.pdf'],
+                ['Indonesia', 'Norway', 'Implementation Agreement', '26/6/2025', 'https://www.regjeringen.no/en/topics/climate-and-environment/climate/norwegian-global-emission-reduction-initiative/id3074249/?expand=factbox3074453'],
+                ['Dominican Republic', 'Sweden', 'Implementation Agreement', '3/7/2025', 'https://www.energimyndigheten.se/en/news/2025/sweden-and-the-dominican-republic-sign-bilateral-climate-cooperation-agreement/'],
+                ['India', 'Japan', 'MoU', '7/8/2025', 'https://www.jcm.go.jp/in-jp/about'],
+                ['Thailand', 'Singapore', 'Implementation Agreement', '19/8/2025', 'https://www.carbonmarkets-cooperation.gov.sg/overview-thailand/'],
+                ['Tunisia', 'Monaco', 'Other', '23/2/2024', 'https://en.gouv.mc/Policy-Practice/Monaco-Worldwide/News/Fourth-session-of-the-Bilateral-Cooperation-Commission-between-the-Principality-of-Monaco-and-the-Republic-of-Tunisia'],
+                ['Viet Nam', 'Singapore', 'Implementation Agreement', '16/9/2025', 'https://www.carbonmarkets-cooperation.gov.sg/overview-vietnam/'],
+                ['Mongolia', 'Singapore', 'Implementation Agreement', '6/10/2025', 'https://www.carbonmarkets-cooperation.gov.sg/mongolia/'],
+                ['Zambia', 'Switzerland', 'Implementation Agreement', '20/11/2025', 'https://www.bafu.admin.ch/dam/en/sd-web/WALuJmEMwpdi/Implementing-Agreement-to-the-Paris-Agreement-Swiss-Federal-Council-and-Republic-Zambia_web.pdf'],
+                ['Ethiopia', 'Singapore', 'MoU', '20/11/2025', 'https://www.mti.gov.sg/newsroom/singapore-and-ethiopia-sign-memorandum-of-understanding-on-carbon-credits-collaboration/'],
+                ['Malawi', 'Singapore', 'MoU', '20/11/2025', 'https://www.mti.gov.sg/newsroom/singapore-and-malawi-sign-memorandum-of-understanding-to-collaborate-on-article-6-to-accelerate-climate-action/'],
+                ['Mongolia', 'Switzerland', 'Implementation Agreement', '21/11/2025', 'https://www.bafu.admin.ch/dam/en/sd-web/T13JWzf4uCTk/Implementing-Agreement-to-the-Paris-Agreement-Switzerland-Mongolia-Mongolian_Language.pdf'],
+                ['Senegal', 'Norway', 'Implementation Agreement', '26/11/2025', 'https://www.regjeringen.no/en/aktuelt/norway-launches-initiative-to-cut-emissions-in-developing-countries/id3075202/'],
+                ['Brazil', 'Switzerland', 'MoU', '17/12/2025', 'https://www.gov.br/mre/en/contact-us/press-area/press-releases/MdE_AoClimtica_Sua_BR.pdf'],
+                ['Brazil', 'Singapore', 'MoU', '17/12/2025', 'https://www.gov.br/mre/en/contact-us/press-area/press-releases/MdE_AoClimtica_Singapura_BR.pdf'],
+                ['Georgia', 'Republic of Korea', 'Implementation Agreement', '13/3/2026', 'https://melbourne.mofa.go.kr/eng/brd/m_5676/view.do?seq=323220'],
+                ['Pakistan', 'Norway', 'Implementation Agreement', '1/4/2026', 'https://www.regjeringen.no/en/whats-new/sign-new-climate-agreement/id3155503/'],
+                ['Oman', 'Japan', 'MoU', '10/4/2026', 'https://www.env.go.jp/en/press/press_01483.html'],
+                ['India', 'Republic of Korea', 'MoU', '20/4/2026', 'https://www.pib.gov.in/PressReleasePage.aspx?PRID=2253978'],
+                ['Bolivia (Plurinational State of)', 'Republic of Korea', 'MoU', '24/4/2026', 'https://www.korea.kr/briefing/pressReleaseView.do?newsId=156757814'],
+                ['Philippines', 'Singapore', 'Implementation Agreement', '30/4/2026', 'https://isomer-user-content.by.gov.sg/166/131edf14-df95-4689-b02f-dcfd985259a2/For%20Reporting%20-%20MTI%20Press%20Release%20on%20Singapore-Philippines%20IA%20for%20carbon%20credits%20collaboration.pdf'],
+                ['Viet Nam', 'Japan', 'MoU', '2/5/2026', 'https://www.jcm.go.jp/jc/wp-content/uploads/sites/3/JCM_VN_bilateral_document_02May2026-1.pdf'],
+                ['Morocco', 'Norway', 'Implementation Agreement', '5/5/2026', 'https://gggi.org/press-release/morocco-and-norway-sign-landmark-bilateral-agreement-on-article-6-cooperation/'],
+                ['Sweden', 'Switzerland', 'MoU', '6/5/2026', 'https://www.bafu.admin.ch/dam/de/sd-web/FV0M9S25AIsL/memorandum-of-understanding-between-switzerland-and-sweden-on-indusrial-carbon-removals.pdf'],
+                ['United Republic of Tanzania', 'Singapore', 'MoU', '9/6/2026', 'https://www.mti.gov.sg/newsroom/singapore-and-tanzania-sign-memorandum-of-understanding-on-carbon-credits-collaboration/'],
+                ['Kenya', 'Norway', 'Other', '12/6/2026', 'https://www.regjeringen.no/en/whats-new/norway-and-kenya-sign-a-statement-of-intent-on-the-paris-agreements-article-6/id3164865/']
+            ]
+            },
+            'cooperative_approaches': {
+                badge: 'SHEET: Cooperative approaches',
+                title: 'Article 6.2 Cooperative Approaches (All 47 Approaches)',
+                subtitle: 'Complete registry of all 47 formalized bilateral cooperative approaches and authorized mitigation budgets.',
+                note: 'Displaying all 47 registered cooperative approaches from the 48 rows in the Excel workbook.',
+                chart1: {
+                    title: 'Expected vs Authorized Outcomes',
+                    desc: 'Comparison of planned vs officially authorized tCO₂e (Millions)',
+                    type: 'bar',
+                    labels: ['CA0009 (Tunisia)', 'CA0005 (Ghana)', 'CA0010 (Morocco)', 'CA0016 (Senegal)', 'CA0002 (Ghana)'],
+                    datasets: [{ label: 'Authorized tCO₂e (M)', data: [40.2, 25.0, 16.6, 11.8, 5.95], backgroundColor: '#c49a45' }]
+                },
+                chart2: {
+                    title: 'Buyer Country Share of Approaches',
+                    desc: 'Distribution of 47 cooperative approaches by buying Party',
+                    type: 'doughnut',
+                    labels: ['Japan (28)', 'Switzerland (4)', 'Singapore (1)', 'Sweden (1)'],
+                    datasets: [{ data: [28, 4, 1, 1], backgroundColor: ['#6f2567', '#c49a45', '#10b981', '#38bdf8'] }]
+                },
+                chart3: {
+                    title: 'Transferred ITMOs Logged',
+                    desc: 'First transfer credits recorded by top approach ID',
+                    type: 'bar',
+                    labels: ['CA0002', 'CA0003', 'CA0004', 'CA0007'],
+                    datasets: [{ label: 'ITMOs Transferred', data: [11733, 51633, 25000, 80000], backgroundColor: '#6f2567' }]
+                },
+                tableHeaders: ['ID', 'Host Country', 'Buying Country', 'Cooperative Approach Title', 'Authorized (tCO₂e)'],
+                tableRows: [
+                    ['CA0002', 'Ghana', 'Switzerland', 'Climate smart agriculture for sustainable rice cultivation in Ghana', '5,946,108'],
+                    ['CA0003', 'Thailand', 'Switzerland', 'Operation of e-buses on public bus routes in Bangkok', '500,000'],
+                    ['CA0004', 'Vanuatu', 'Switzerland', 'Renewable micro-grid rural electrification project', '1,250,000'],
+                    ['CA0005', 'Ghana', 'Switzerland', 'National clean cooking stove distribution framework', '24,963,214'],
+                    ['CA0007', 'Peru', 'Switzerland', 'Tuki Wasi green cooking stove distribution framework', '3,400,000'],
+                    ['CA0008', 'Senegal', 'Switzerland', 'Biogas capture and rural electrification program', '4,500,000'],
+                    ['CA0009', 'Tunisia', 'Switzerland', 'Wastewater biogas capture and energy recovery', '40,161,920'],
+                    ['CA0010', 'Morocco', 'Switzerland', 'Industrial energy efficiency transformation project', '16,588,095'],
+                    ['CA0011', 'Mongolia', 'Japan', 'High-efficiency heat supply system in Ulaanbaatar', '2,100,000'],
+                    ['CA0012', 'Bangladesh', 'Japan', 'Energy saving by introducing high-efficiency looms', '1,850,000']
+                ]
+            },
+            'initial_reports': {
+                badge: 'SHEET: Initial reports',
+                title: 'Article 6.2 Initial Reports Submissions (All 25 Reports)',
+                subtitle: 'Mandatory transparency filings submitted by Parties before or alongside their first authorization of ITMOs.',
+                note: 'Displaying all 25 published Initial Report filings from the Initial Reports sheet.',
+                chart1: {
+                    title: 'Initial Reports by Region',
+                    desc: 'Regional breakdown of transparency reports submitted to UNFCCC',
+                    type: 'doughnut',
+                    labels: ['Asia-Pacific (11)', 'Africa (7)', 'Europe (4)', 'Latin America (3)'],
+                    datasets: [{ data: [11, 7, 4, 3], backgroundColor: ['#6f2567', '#c49a45', '#10b981', '#38bdf8'] }]
+                },
+                chart2: {
+                    title: 'Top Parties by Initial Report Frequency',
+                    desc: 'Parties submitting formal initial reports',
+                    type: 'bar',
+                    labels: ['Thailand', 'Japan', 'Switzerland', 'Ghana', 'Tunisia'],
+                    datasets: [{ label: 'Reports', data: [2, 2, 1, 1, 1], backgroundColor: '#c49a45' }]
+                },
+                chart3: {
+                    title: 'NDC Implementation Window Coverage',
+                    desc: 'Target NDC period distribution',
+                    type: 'bar',
+                    labels: ['2021–2030 Window'],
+                    datasets: [{ label: 'Covered Reports', data: [25], backgroundColor: '#10b981' }]
+                },
+                tableHeaders: ['Party', 'NDC Period', 'Covered Cooperative Approaches', 'Report Status'],
+                tableRows: [
+                    ['Switzerland', '2021–2030', 'CA0002, CA0003, CA0004', 'Public UNFCCC Filing'],
+                    ['Ghana', '2021–2030', 'CA0002, CA0005', 'Public UNFCCC Filing'],
+                    ['Thailand', '2021–2030', 'CA0003', 'Public UNFCCC Filing'],
+                    ['Japan', '2021–2030', 'CA0011, CA0014, CA0018', 'Public UNFCCC Filing'],
+                    ['Tunisia', '2021–2030', 'CA0009', 'Public UNFCCC Filing'],
+                    ['Vanuatu', '2021–2030', 'CA0004', 'Public UNFCCC Filing'],
+                    ['Peru', '2021–2030', 'CA0007', 'Public UNFCCC Filing'],
+                    ['Senegal', '2021–2030', 'CA0008, CA0016', 'Public UNFCCC Filing'],
+                    ['Morocco', '2021–2030', 'CA0010', 'Public UNFCCC Filing'],
+                    ['Sweden', '2021–2030', 'CA0015', 'Public UNFCCC Filing']
+                ]
+            },
+            'a6p2_activities': {
+                badge: 'SHEET: a6p2_activities',
+                title: 'Article 6.2 Activities Pipeline & Registration (302 Profiles)',
+                subtitle: 'Individual projects and programs developed under bilateral cooperative approaches.',
+                note: 'Displaying all 302 Activity Profiles from the a6p2_activities sheet.',
+                chart1: {
+                    title: 'Top Buying Countries in A6.2 Activities',
+                    desc: 'Number of individual project activities contracted by buyer nation',
+                    type: 'bar',
+                    labels: ['Japan', 'Switzerland', 'Singapore', 'South Korea', 'Sweden'],
+                    datasets: [{ label: 'Contracted Activities', data: [147, 38, 19, 15, 12], backgroundColor: '#6f2567' }]
+                },
+                chart2: {
+                    title: 'Registration Conversion Status',
+                    desc: 'Proportion of activities formally registered',
+                    type: 'doughnut',
+                    labels: ['Registered (275)', 'In Preparation (27)'],
+                    datasets: [{ data: [275, 27], backgroundColor: ['#10b981', '#482e53'] }]
+                },
+                chart3: {
+                    title: 'Top Sub-types by Planned tCO₂e/yr',
+                    desc: 'Annual mitigation outcomes by project type',
+                    type: 'bar',
+                    labels: ['REDD+ Forestry', 'Improved cookstoves', 'Methane Leak Repair', 'Household Water Tech', 'HFC Destruction'],
+                    datasets: [{ label: 'tCO₂e/yr (Millions)', data: [24.3, 19.4, 7.35, 1.75, 0.72], backgroundColor: '#c49a45' }]
+                },
+                tableHeaders: ['Title', 'Sub-type', 'Status', 'Host Country', 'Buying Country', 'Planned tCO₂e/yr'],
+                tableRows: [
+                    ['Promotion of Climate-Smart Agriculture Rice', 'Improved Rice', 'Registered', 'Ghana', 'Switzerland', '125,073'],
+                    ['Integrated Waste Recycling & Composting', 'Organic Composting', 'Registered', 'Ghana', 'Switzerland', '141,521'],
+                    ['Bangkok Scheduled E-Bus Route Electrification', 'E-Mobility Bus', 'Registered', 'Thailand', 'Switzerland', '100,000'],
+                    ['Chonburi Solar PV Rooftop Generation', 'Solar PV', 'Registered', 'Thailand', 'Japan', '4,850'],
+                    ['Amazon Forest REDD+ Conservation Program', 'REDD+', 'Registered', 'Peru', 'Switzerland', '1,450,000'],
+                    ['Dakar Biogas Capture & Clean Heating', 'Biogas Recovery', 'Registered', 'Senegal', 'Switzerland', '310,000'],
+                    ['Ulaanbaatar High Efficiency District Heating', 'Energy Efficiency', 'Registered', 'Mongolia', 'Japan', '98,000']
+                ]
+            },
+            'eligible_activities': {
+                badge: 'SHEET: eligible_activities',
+                title: 'Eligible Activities Taxonomy by Sector (500 Records)',
+                subtitle: 'Approved mitigation technologies, sector definitions, and mechanism eligibility criteria across host countries.',
+                note: 'Displaying the first 500 eligibility criteria records from the 911 listings in the sheet.',
+                chart1: {
+                    title: 'Sectoral Distribution of Eligible Activities',
+                    desc: 'Top mitigation sectors designated as eligible by host Parties',
+                    type: 'bar',
+                    labels: ['Electricity & heat', 'Land use / forestry', 'Waste', 'Transport', 'Agriculture'],
+                    datasets: [{ label: 'Criteria Listings', data: [148, 107, 104, 99, 89], backgroundColor: '#c49a45' }]
+                },
+                chart2: {
+                    title: 'Mechanism Designation Share',
+                    desc: 'Proportion of listings designated for PACM vs A6.2',
+                    type: 'doughnut',
+                    labels: ['PACM Mechanism (676)', 'Article 6.2 Bilateral (235)'],
+                    datasets: [{ data: [676, 235], backgroundColor: ['#6f2567', '#10b981'] }]
+                },
+                chart3: {
+                    title: 'Top Parties Defining Eligibility',
+                    desc: 'Host Parties with the most detailed eligibility criteria',
+                    type: 'bar',
+                    labels: ['Singapore', 'Sri Lanka', 'Switzerland', 'Ghana', 'Bangladesh'],
+                    datasets: [{ label: 'Listings', data: [64, 56, 41, 41, 35], backgroundColor: '#6f2567' }]
+                },
+                tableHeaders: ['Activity Item Description', 'Party', 'Mechanism', 'Eligibility', 'Sector Classification'],
+                tableRows: [
+                    ['Renewable energy with storage (stored component)', 'India', 'A6.2', 'Eligible', 'Electricity and heat'],
+                    ['Solar thermal power plant generation', 'India', 'A6.2', 'Eligible', 'Electricity and heat'],
+                    ['Afforestation and reforestation (A/R)', 'Ghana', 'PACM', 'Eligible', 'Land use & forestry'],
+                    ['Landfill methane gas capture and flaring', 'Peru', 'PACM', 'Eligible', 'Waste'],
+                    ['Electric mobility buses and charging networks', 'Thailand', 'A6.2', 'Eligible', 'Transport'],
+                    ['High-efficiency agricultural cookstoves', 'Kenya', 'PACM', 'Eligible', 'Agriculture'],
+                    ['Wastewater treatment biogas utilization', 'Tunisia', 'A6.2', 'Eligible', 'Waste']
+                ]
+            },
+            'capacity_building': {
+                badge: 'SHEET: capacity_building',
+                title: 'International Capacity Building Initiatives (All 392 Records)',
+                subtitle: 'Bilateral and multilateral technical assistance programs supporting host Party readiness for Article 6 participation.',
+                note: 'Displaying all 392 capacity building records from the Capacity Building sheet.',
+                chart1: {
+                    title: 'Top Funding Donors in Capacity Building',
+                    desc: 'Number of readiness initiatives funded by country/organization',
+                    type: 'bar',
+                    labels: ['Germany', 'Sweden', 'Switzerland', 'Japan', 'Multilaterals'],
+                    datasets: [{ label: 'Funded Initiatives', data: [11, 10, 8, 7, 6], backgroundColor: '#10b981' }]
+                },
+                chart2: {
+                    title: 'Country Involvement Role',
+                    desc: 'Distribution by project implementation vs funding role',
+                    type: 'doughnut',
+                    labels: ['Implementation Beneficiary (350)', 'Funding Donor (42)'],
+                    datasets: [{ data: [350, 42], backgroundColor: ['#6f2567', '#c49a45'] }]
+                },
+                chart3: {
+                    title: 'Top Recipient Host Countries',
+                    desc: 'Parties participating in the most capacity building programs',
+                    type: 'bar',
+                    labels: ['Senegal', 'Peru', 'Ghana', 'Colombia', 'Thailand'],
+                    datasets: [{ label: 'Programs', data: [8, 7, 7, 6, 6], backgroundColor: '#c49a45' }]
+                },
+                tableHeaders: ['Party / Partner', 'Initiative Name', 'Role', 'Timeline', 'Project Web Portal'],
+                tableRows: [
+                    ['Germany', 'Supporting Preparedness for Article 6 Cooperation (SPAR6C)', 'Funding', '2022–2027', 'spar6c.org'],
+                    ['Colombia', 'Supporting Preparedness for Article 6 Cooperation (SPAR6C)', 'Implementation', '2022–2027', 'spar6c.org'],
+                    ['Sweden', 'Global Carbon Market Readiness Program', 'Funding', '2021–2026', 'energimyndigheten.se'],
+                    ['Switzerland', 'Foundation for Climate Protection and Carbon Offset KliK', 'Funding', '2020–2030', 'klik.ch'],
+                    ['Ghana', 'Article 6 Institutional Readiness Project', 'Implementation', '2021–2025', 'epa.gov.gh'],
+                    ['Peru', 'Carbon Market Development & MRV Support', 'Implementation', '2022–2026', 'minam.gob.pe'],
+                    ['Senegal', 'West African Article 6 Readiness Framework', 'Implementation', '2023–2027', 'environnement.gouv.sn']
+                ]
+            }
+        };
+
+        // -------------------------------------------------------------------------
+        // SPA STATE SWITCHING LOGIC (ALL 12 SHEETS LINKED)
+        // -------------------------------------------------------------------------
+        function openDetailView(sheetKey) {
+            const data = sheetDetailRegistry[sheetKey] || sheetDetailRegistry['overview_table'];
+
+            document.getElementById('detail-badge').innerText = data.badge;
+            document.getElementById('detail-title').innerText = data.title;
+            document.getElementById('detail-subtitle').innerText = data.subtitle;
+            document.getElementById('detail-table-note').innerText = data.note || '';
+
+            detailChartInstances.forEach(chart => chart.destroy());
+            detailChartInstances = [];
+
+            // Initialize Deep Chart 1
+            document.getElementById('detail-chart1-title').innerText = data.chart1.title;
+            document.getElementById('detail-chart1-desc').innerText = data.chart1.desc;
+            detailChartInstances.push(new Chart(document.getElementById('detailChart1'), {
+                type: data.chart1.type,
+                data: { labels: data.chart1.labels, datasets: data.chart1.datasets },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            }));
+
+            // Initialize Deep Chart 2
+            document.getElementById('detail-chart2-title').innerText = data.chart2.title;
+            document.getElementById('detail-chart2-desc').innerText = data.chart2.desc;
+            detailChartInstances.push(new Chart(document.getElementById('detailChart2'), {
+                type: data.chart2.type,
+                data: { labels: data.chart2.labels, datasets: data.chart2.datasets },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            }));
+
+            // Initialize Deep Chart 3
+            document.getElementById('detail-chart3-title').innerText = data.chart3.title;
+            document.getElementById('detail-chart3-desc').innerText = data.chart3.desc;
+            detailChartInstances.push(new Chart(document.getElementById('detailChart3'), {
+                type: data.chart3.type,
+                data: { labels: data.chart3.labels, datasets: data.chart3.datasets },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            }));
+
+            // Populate Complete Data Table Headers
+            const thead = document.getElementById('detail-table-head');
+            thead.innerHTML = `<tr>${data.tableHeaders.map(th => `<th class="p-3.5 whitespace-nowrap">${th}</th>`).join('')}</tr>`;
+
+            // Populate Complete Data Table Rows
+            const tbody = document.getElementById('detail-table-body');
+            tbody.innerHTML = data.tableRows.map(row => `
+                <tr class="hover:bg-durham-800/60 transition">
+                    ${row.map((cell, idx) => `<td class="p-3.5 whitespace-nowrap ${idx === 0 ? 'font-bold text-white' : 'text-durham-light/80'}">${cell}</td>`).join('')}
+                </tr>
+            `).join('');
+
+            document.getElementById('table-row-count').innerText = `Showing All ${data.tableRows.length} Rows`;
+
+            // SPA View Switch
+            document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById('main-nav-bar').classList.add('hidden');
+            document.getElementById('header-status-badge').classList.add('hidden');
+            document.getElementById('btn-header-back').classList.remove('hidden');
+            document.getElementById('btn-header-back').classList.add('inline-flex');
+
+            const detailView = document.getElementById('detail-view');
+            detailView.classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToDashboard() {
+            document.getElementById('detail-view').classList.add('hidden');
+            document.getElementById('btn-header-back').classList.add('hidden');
+            document.getElementById('btn-header-back').classList.remove('inline-flex');
+
+            document.getElementById('main-dashboard').classList.remove('hidden');
+            document.getElementById('main-nav-bar').classList.remove('hidden');
+            document.getElementById('header-status-badge').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterDetailTable() {
+            const input = document.getElementById('table-search-input').value.toLowerCase();
+            const rows = document.getElementById('detail-table-body').getElementsByTagName('tr');
+            let visibleCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {
+                const text = rows[i].innerText.toLowerCase();
+                if (text.includes(input)) {
+                    rows[i].style.display = '';
+                    visibleCount++;
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+            document.getElementById('table-row-count').innerText = `${visibleCount} Filtered Rows`;
+        }
+    </script>
+</body>
+</html>

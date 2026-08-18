@@ -114,7 +114,7 @@ class RAGRetriever:
         self.vector_store = vector_store
         self.embedding_manager = embedding_manager
 
-    def retrieve(self, query: str, top_k: int = 5, score_threshold: float = 0.0):
+    def retrieve(self, query: str, top_k: int = 9, score_threshold: float = 0.6):
         query_embedding = self.embedding_manager.generate_embeddings([query])
         faiss.normalize_L2(query_embedding)
         
@@ -139,26 +139,64 @@ class RAGRetriever:
 
 class OllamaLLM:
     """Handles interaction with Ollama."""
-    def __init__(self, model_name: str = "deepseek-r1:8b", host: str = "http://localhost:11434"):
+    def __init__(self, model_name: str = "deepseek-r1:14b", host: str = "http://localhost:11434"):
+        # default generation size; can be overridden per-call in generate_response
+        self.model_name = model_name
+        self.host = host
+        self.default_num_predict = 8192
+        self.temperature = 0.1
+
         self.llm = ChatOllama(
-            model=model_name,
-            temperature=0.1,
-            num_predict=1024,
-            base_url=host
+            model=self.model_name,
+            temperature=self.temperature,
+            num_predict=self.default_num_predict,
+            base_url=self.host
         )
 
-    def generate_response(self, query: str, context: str) -> str:
+    def generate_response(self, query: str, context: str, num_predict: int | None = None) -> str:
         prompt_template = """### Instruction
-        Analyze the context and answer the user's question.
-        
-        ### Context
-        {context}
+You are an expert legal assistant specializing in Climate Law. Your task is to conduct an exhaustive, highly detailed, and comprehensive analysis of the provided context to answer the user's question.
 
-        ### Question
-        {question}
+### Guidelines
+1. **Unrestricted Verbosity:** There are NO constraints on the length of your response. You must be as verbose and thorough as the complexity of the retrieved text demands. Do not summarize, condense, or oversimplify complex legal provisions.
+2. **Completeness:** Address every single relevant nuance, sub-clause, exception, and condition found in the text. If the context provides multiple viewpoints or detailed procedures, explain them all in depth.
+3. **Source Truth:** Answer using ONLY the information provided in the "Context" section below. Do not use outside knowledge.
+4. **Tone:** Maintain a professional, objective, and scholarly legal tone.
+5. **Citations:** Rigorously reference specific articles, sections, or paragraphs from the context when making claims.
+6. **Fallback:** If the context does not contain the answer, explicitly state: "The provided context does not contain sufficient information to answer this question."
 
-        ### Answer
-        """
+### Response Structure
+You must provide your answer in three distinct, detailed parts:
+
+**Part 1: Comprehensive Analysis of the Agreement**
+Identify, quote, and analyze *every* specific section from the provided agreement that is relevant to the question. Elaborate on the definitions and specific wording used in the text.
+
+**Part 2: Relevant Legal Standards & Regulations**
+Identify and detail the relevant sections from provided standards or legal materials (e.g., ISO, regulations). Explain the specific metrics, compliance requirements, or technical obligations in full.
+
+**Part 3: In-Depth Legal Assessment**
+Based on the comprehensive evidence gathered in Parts 1 and 2, provide a lengthy and detailed legal conclusion. Synthesize the information to explore the implications, obligations, and dispute resolution mechanisms fully.
+
+### Context
+{context}
+
+### Question
+{question}
+
+### Answer
+"""
         formatted_prompt = prompt_template.format(context=context, question=query)
-        response = self.llm.invoke([HumanMessage(content=formatted_prompt)])
+
+        # If caller requested a different num_predict, use a temporary client for this call
+        if num_predict is None or num_predict == self.default_num_predict:
+            response = self.llm.invoke([HumanMessage(content=formatted_prompt)])
+        else:
+            temp_llm = ChatOllama(
+                model=self.model_name,
+                temperature=self.temperature,
+                num_predict=num_predict,
+                base_url=self.host,
+            )
+            response = temp_llm.invoke([HumanMessage(content=formatted_prompt)])
+
         return response.content
