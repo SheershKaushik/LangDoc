@@ -1,5 +1,5 @@
 
-# Lex6 — Retrieval-Augmented Legal/Policy Assistant
+# LangDoc — Retrieval-Augmented Legal/Policy Assistant
 Lex6
 
 ## Quickstart
